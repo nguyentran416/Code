@@ -1,0 +1,23 @@
+# Python virtual environments
+venv/
+.venv/
+tfenv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# IDE
+.vscode/
+
+# Database
+*.db
+
+# Upload files
+uploads/
+
+# Optional model files
+# *.keras
+# *.h5
+# *.pt
+# *.pth

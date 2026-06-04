@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+{% block title %}{{ article.title }}{% endblock %}
+
+{% block content %}
+<style>
+    body { background: #eef7ee; }
+    .news-detail-wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 36px 0 56px;
+    }
+    .news-detail-card {
+        background: #fff;
+        border-radius: 26px;
+        border: 1px solid #e2efe2;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+        overflow: hidden;
+    }
+    .news-detail-hero img {
+        width: 100%;
+        height: 420px;
+        object-fit: cover;
+        display: block;
+    }
+    .news-detail-body {
+        padding: 28px;
+    }
+    .news-detail-title {
+        font-size: 2.3rem;
+        font-weight: 800;
+        line-height: 1.2;
+        color: #0f172a;
+        margin-bottom: 14px;
+    }
+    .news-detail-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px 18px;
+        color: #64748b;
+        font-size: 0.95rem;
+        margin-bottom: 22px;
+    }
+    .news-detail-meta i { color: #16a34a; margin-right: 6px; }
+    .news-detail-content {
+        color: #334155;
+        line-height: 1.9;
+        font-size: 1.02rem;
+    }
+    .news-detail-content h2, .news-detail-content h3 {
+        color: #0f172a;
+        margin-top: 1.3rem;
+        margin-bottom: 0.8rem;
+    }
+    .news-detail-content img {
+        max-width: 100%;
+        border-radius: 16px;
+        margin: 16px 0;
+    }
+    .news-related {
+        margin-top: 28px;
+        background: #fff;
+        border-radius: 22px;
+        border: 1px solid #e2efe2;
+        padding: 22px;
+    }
+    .related-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+        margin-top: 16px;
+    }
+    .related-card {
+        display: block;
+        background: #f8fdf8;
+        border: 1px solid #e2efe2;
+        border-radius: 16px;
+        padding: 14px;
+        text-decoration: none;
+        color: inherit;
+        transition: 0.18s;
+    }
+    .related-card:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06); }
+    .related-card img {
+        width: 100%;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 12px;
+        margin-bottom: 10px;
+    }
+    .related-card h4 {
+        font-size: 15px;
+        font-weight: 700;
+        line-height: 1.45;
+        margin-bottom: 8px;
+        color: #0f172a;
+    }
+    .btn-back-news {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #16a34a;
+        color: #fff;
+        padding: 11px 18px;
+        border-radius: 12px;
+        font-weight: 700;
+        text-decoration: none;
+        margin-top: 22px;
+    }
+    .btn-back-news:hover { color: #fff; background: #15803d; }
+    @media (max-width: 992px) {
+        .related-grid { grid-template-columns: repeat(2, 1fr); }
+        .news-detail-hero img { height: 320px; }
+    }
+    @media (max-width: 640px) {
+        .news-detail-body { padding: 20px; }
+        .news-detail-title { font-size: 1.7rem; }
+        .related-grid { grid-template-columns: 1fr; }
+    }
+</style>
+
+<div class="news-detail-wrap">
+    <div class="news-detail-card">
+        <div class="news-detail-hero">
+            <img src="{{ article.image }}" alt="{{ article.title }}">
+        </div>
+        <div class="news-detail-body">
+            <h1 class="news-detail-title">{{ article.title }}</h1>
+            <div class="news-detail-meta">
+                <span><i class="fas fa-user"></i>{{ article.author }}</span>
+                <span><i class="fas fa-calendar"></i>{{ article.created_at_text }}</span>
+                <span><i class="fas fa-eye"></i>{{ article.views }} lượt xem</span>
+                <span><i class="fas fa-folder"></i>{{ article.category }}</span>
+            </div>
+            <div class="news-detail-content">
+                {{ article.content|safe }}
+            </div>
+            <a href="{{ url_for('news_page') }}" class="btn-back-news">
+                <i class="fas fa-arrow-left"></i> Quay lại danh sách tin tức
+            </a>
+        </div>
+    </div>
+
+    {% if related_articles %}
+    <div class="news-related">
+        <h3 style="font-size:20px;font-weight:800;margin-bottom:0;">Bài viết liên quan</h3>
+        <div class="related-grid">
+            {% for related in related_articles %}
+            <a href="{{ url_for('news_detail', slug=related.slug) }}" class="related-card">
+                <img src="{{ related.image }}" alt="{{ related.title }}">
+                <h4>{{ related.title }}</h4>
+                <div class="meta-row" style="font-size:12px; margin-bottom:0;">
+                    <span><i class="fas fa-calendar"></i>{{ related.date }}</span>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

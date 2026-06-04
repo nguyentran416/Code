@@ -1,0 +1,426 @@
+{% extends "base.html" %}
+{% block title %}Lịch Sử Hoạt Động{% endblock %}
+
+{% block content %}
+<style>
+    body { background: #eef7ee; }
+
+    .history-wrapper {
+        padding: 36px 0 56px;
+        max-width: 1280px;
+        margin: 0 auto;
+    }
+
+    .history-hero {
+        display: grid;
+        grid-template-columns: 1fr 1.1fr;
+        gap: 28px;
+        align-items: start;
+        margin-bottom: 32px;
+    }
+
+    .history-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .history-icon {
+        width: 88px;
+        height: 88px;
+        border-radius: 50%;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+        flex-shrink: 0;
+    }
+
+    .history-title h1 {
+        font-size: 3.2rem;
+        font-weight: 800;
+        line-height: 1.15;
+        margin-bottom: 12px;
+    }
+
+    .history-title .title-dark { color: #0f172a; }
+    .history-title .title-green { color: #16a34a; }
+
+    .title-line {
+        width: 64px;
+        height: 5px;
+        background: #16a34a;
+        border-radius: 20px;
+        margin-bottom: 16px;
+    }
+
+    .history-title p {
+        color: #64748b;
+        font-size: 1.05rem;
+        line-height: 1.75;
+        margin: 0;
+        max-width: 420px;
+    }
+
+    .stats-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+    }
+
+    .stats-card {
+        background: #fff;
+        border-radius: 22px;
+        padding: 24px 20px;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+        border: 1px solid #e8f0e8;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        transition: 0.25s;
+    }
+
+    .stats-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
+    }
+
+    .stats-icon {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 16px;
+        flex-shrink: 0;
+    }
+
+    .stats-icon.blue { background: #dbeafe; }
+    .stats-icon.orange { background: #ffedd5; }
+    .stats-icon.purple { background: #ede9fe; }
+
+    .stats-card h3 {
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 6px;
+        color: #0f172a;
+        line-height: 1.1;
+    }
+
+    .stats-card p {
+        color: #64748b;
+        margin: 0;
+        font-size: 0.95rem;
+        font-weight: 500;
+    }
+
+    .history-table {
+        background: #fff;
+        border-radius: 24px;
+        padding: 8px 8px 12px;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+        border: 1px solid #e8f0e8;
+        overflow: hidden;
+    }
+
+    .table { margin-bottom: 0; }
+
+    .table thead {
+        background: #f4faf4;
+    }
+
+    .table thead th {
+        border: none;
+        color: #16a34a;
+        font-size: 0.92rem;
+        font-weight: 700;
+        padding: 18px 20px;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+    }
+
+    .table thead th .th-inner {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .table tbody td {
+        padding: 18px 20px;
+        vertical-align: middle;
+        border-color: #edf2f7;
+        font-size: 0.98rem;
+        color: #334155;
+    }
+
+    .activity-badge {
+        padding: 8px 14px;
+        border-radius: 12px;
+        font-weight: 600;
+        display: inline-block;
+        font-size: 0.9rem;
+    }
+
+    .activity-badge.plastic { background: #dbeafe; color: #2563eb; }
+    .activity-badge.paper { background: #fef3c7; color: #d97706; }
+    .activity-badge.metal { background: #ffedd5; color: #c2410c; }
+    .activity-badge.glass { background: #ede9fe; color: #7c3aed; }
+    .activity-badge.biological { background: #dcfce7; color: #16a34a; }
+    .activity-badge.trash { background: #f1f5f9; color: #475569; }
+    .activity-badge.shoes { background: #fce7f3; color: #db2777; }
+    .activity-badge.clothes { background: #fdf2f8; color: #be185d; }
+    .activity-badge.battery { background: #fee2e2; color: #dc2626; }
+    .activity-badge.multi { background: #e0e7ff; color: #4f46e5; }
+    .activity-badge.other { background: #f1f5f9; color: #64748b; }
+    .activity-badge.logout { background: #f1f5f9; color: #64748b; }
+
+    .history-image-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 70px;
+        height: 70px;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid #dbe7db;
+        background: #f8faf8;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .history-image-link:hover {
+        transform: scale(1.04);
+        border-color: #b9d7ba;
+        box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
+    }
+
+    .history-image-thumb {
+        width: 70px;
+        height: 70px;
+        object-fit: cover;
+        border-radius: 12px;
+        display: block;
+    }
+
+    .history-no-image {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: #f1f5f9;
+        color: #64748b;
+        border: 1px solid #e2e8f0;
+        font-size: 0.88rem;
+        font-weight: 600;
+    }
+
+    .score {
+        color: #16a34a;
+        font-weight: 700;
+        font-size: 1rem;
+    }
+
+    .empty-row td {
+        text-align: center;
+        color: #94a3b8;
+        padding: 40px;
+    }
+
+    @media (max-width: 1100px) {
+        .history-hero {
+            grid-template-columns: 1fr;
+        }
+        .stats-row {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .history-header {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .history-title p { max-width: 100%; }
+        .title-line { margin-left: auto; margin-right: auto; }
+        .stats-row { grid-template-columns: 1fr; }
+        .history-title h1 { font-size: 2.4rem; }
+    }
+</style>
+
+<div class="container history-wrapper">
+
+    <div class="history-hero">
+
+        <div class="history-header">
+            <div class="history-icon">
+                <svg width="44" height="44" viewBox="0 0 40 40" fill="none">
+                    <rect x="10" y="8" width="20" height="26" rx="3"
+                        fill="#d97706" opacity=".13"/>
+                    <rect x="10" y="8" width="20" height="26" rx="3"
+                        stroke="#d97706" stroke-width="2"/>
+                    <line x1="15" y1="16" x2="25" y2="16"
+                        stroke="#d97706" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="15" y1="21" x2="25" y2="21"
+                        stroke="#d97706" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="15" y1="26" x2="21" y2="26"
+                        stroke="#d97706" stroke-width="2" stroke-linecap="round"/>
+                    <circle cx="27" cy="28" r="5"
+                        fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+                    <path d="M27 25.5v2.5l1.5 1.5"
+                        stroke="#d97706" stroke-width="1.5"
+                        stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+
+            <div class="history-title">
+                <h1>
+                    <span class="title-dark">Lịch sử</span>
+                    <span class="title-green"> sử dụng</span>
+                </h1>
+                <div class="title-line"></div>
+                <p>
+                    Xem lại các hoạt động phân loại rác của bạn.
+                    Mỗi hành động nhỏ đều góp phần tạo nên môi trường xanh – sạch – đẹp.
+                </p>
+            </div>
+        </div>
+
+        <div class="stats-row">
+            <div class="stats-card">
+                <div class="stats-icon blue">
+                    <svg width="36" height="36" viewBox="0 0 40 40" fill="none">
+                        <rect x="8" y="13" width="24" height="20" rx="3"
+                            fill="#2563eb" opacity=".15"/>
+                        <rect x="8" y="13" width="24" height="20" rx="3"
+                            stroke="#2563eb" stroke-width="2"/>
+                        <path d="M15 13V11a2 2 0 012-2h6a2 2 0 012 2v2"
+                            stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
+                        <line x1="16" y1="19" x2="16" y2="27"
+                            stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
+                        <line x1="20" y1="19" x2="20" y2="27"
+                            stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
+                        <line x1="24" y1="19" x2="24" y2="27"
+                            stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <h3>{{ history_stats.total_classifications }}</h3>
+                <p>Tổng số lần phân loại</p>
+            </div>
+
+            <div class="stats-card">
+                <div class="stats-icon orange">
+                    <svg width="36" height="36" viewBox="0 0 40 40" fill="none">
+                        <circle cx="20" cy="20" r="16" fill="#f59e0b" opacity=".18"/>
+                        <circle cx="20" cy="20" r="16" stroke="#f59e0b" stroke-width="2"/>
+                        <text x="50%" y="55%" text-anchor="middle" fill="#f59e0b" font-size="13" font-weight="bold" dy=".3em">★</text>
+                    </svg>
+                </div>
+                <h3>{{ history_stats.most_common_waste_type }}</h3>
+                <p>Loại rác được phân loại nhiều nhất</p>
+            </div>
+
+            <div class="stats-card">
+                <div class="stats-icon purple">
+                    <svg width="36" height="36" viewBox="0 0 40 40" fill="none">
+                        <path d="M20 6l3.2 6.5H30l-5.2 4.5 2 7L20 24l-6.8 4.5 2-7L10 12.5h6.8L20 6z"
+                            fill="#7c3aed" opacity=".15"/>
+                        <path d="M20 6l3.2 6.5H30l-5.2 4.5 2 7L20 24l-6.8 4.5 2-7L10 12.5h6.8L20 6z"
+                            stroke="#7c3aed" stroke-width="2" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <h3>{{ history_stats.total_points }}</h3>
+                <p>Tổng điểm tích lũy</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="history-table">
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>
+                            <span class="th-inner">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2">
+                                    <circle cx="12" cy="12" r="9"/>
+                                    <path d="M12 7v5l3 2"/>
+                                </svg>
+                                Thời gian
+                            </span>
+                        </th>
+                        <th>
+                            <span class="th-inner">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2">
+                                    <path d="M4 12a8 8 0 0116 0"/>
+                                    <path d="M12 4v4M12 16v4"/>
+                                </svg>
+                                Hoạt động
+                            </span>
+                        </th>
+                        <th>
+                            <span class="th-inner">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2">
+                                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                                    <path d="M8 12h8M12 8v8"/>
+                                </svg>
+                                Hình ảnh đã phân loại
+                            </span>
+                        </th>
+                        <th>
+                            <span class="th-inner">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2">
+                                    <path d="M7 7h10v10H7z"/>
+                                    <path d="M9 4h6M9 20h6"/>
+                                </svg>
+                                Loại rác
+                            </span>
+                        </th>
+                        <th>
+                            <span class="th-inner">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2">
+                                    <path d="M12 2l2.4 7H22l-6 4.5 2.3 7L12 17l-6.3 4.5 2.3-7L2 9h7.6L12 2z"/>
+                                </svg>
+                                Điểm
+                            </span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in activities %}
+                    <tr>
+                        <td>{{ row.timestamp }}</td>
+                        <td>{{ row.action }}</td>
+                        <td>
+                            {% if row.image_url %}
+                                <a href="{{ row.image_url }}" class="history-image-link" target="_blank" rel="noopener noreferrer" aria-label="Mở ảnh đã phân loại">
+                                    <img src="{{ row.image_url }}" alt="Ảnh đã phân loại" class="history-image-thumb">
+                                </a>
+                            {% else %}
+                                <span class="history-no-image">Không có ảnh</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="activity-badge {{ row.badge }}">
+                                {{ row.label }}
+                            </span>
+                        </td>
+                        <td class="{% if row.points != '—' %}score{% endif %}">
+                            {{ row.points }}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr class="empty-row">
+                        <td colspan="5">Chưa có hoạt động nào.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

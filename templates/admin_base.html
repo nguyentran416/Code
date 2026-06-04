@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Quản trị{% endblock %} - Hệ thống phân loại rác</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Be Vietnam Pro', sans-serif; box-sizing: border-box; }
+        body {
+            margin: 0;
+            background: #f5faf6;
+            color: #0f172a;
+            min-height: 100vh;
+        }
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+        .admin-sidebar {
+            width: 280px;
+            background: #e8f5e9;
+            border-right: 1px solid #d4e8d4;
+            display: flex;
+            flex-direction: column;
+            padding: 22px 16px 20px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            flex-shrink: 0;
+            transition: width 0.25s ease, padding 0.25s ease;
+            overflow: hidden;
+        }
+        .sidebar-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            min-width: 0;
+        }
+        .sidebar-brand-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: #dcfce7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #16a34a;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .sidebar-brand-text .sub {
+            font-size: 11px;
+            font-weight: 700;
+            color: #16a34a;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+        .sidebar-brand-text .main {
+            font-size: 17px;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.2;
+        }
+        .sidebar-toggle {
+            width: 36px;
+            height: 36px;
+            border: 1px solid #dbe3ec;
+            border-radius: 10px;
+            background: #fff;
+            color: #64748b;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: 0.18s;
+        }
+        .sidebar-toggle:hover {
+            background: #ecfdf3;
+            color: #16a34a;
+            border-color: #bbf7d0;
+        }
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 13px 14px;
+            border-radius: 14px;
+            text-decoration: none;
+            color: #475569;
+            font-size: 15px;
+            font-weight: 600;
+            transition: 0.18s;
+        }
+        .sidebar-link i,
+        .sidebar-link .link-icon {
+            width: 22px;
+            height: 22px;
+            text-align: center;
+            color: #64748b;
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .sidebar-link .link-label { white-space: nowrap; }
+        .sidebar-link.active .link-icon svg [stroke] {
+            stroke: #fff;
+        }
+        .sidebar-link.active .link-icon svg [fill]:not([fill="none"]) {
+            fill: #fff;
+        }
+        .sidebar-link:hover {
+            background: #e8edf3;
+            color: #0f172a;
+        }
+        .sidebar-link.active {
+            background: #16a34a;
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(22, 163, 74, 0.28);
+        }
+        .sidebar-link.active i { color: #fff; }
+        .sidebar-bottom {
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            padding-top: 18px;
+        }
+        .sidebar-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            border-radius: 16px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+        }
+        .sidebar-user-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #16a34a;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+        .sidebar-user-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .sidebar-user-role {
+            font-size: 13px;
+            color: #64748b;
+        }
+        .admin-main {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            background: #f5faf6;
+        }
+        .admin-topbar {
+            background: #f5faf6;
+            border-bottom: 1px solid #e2efe2;
+            padding: 16px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 14px;
+        }
+        .topbar-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            color: #475569;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .topbar-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #ef4444;
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .topbar-profile {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 14px;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            color: #0f172a;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .admin-content {
+            padding: 24px 28px 16px;
+            flex: 1;
+        }
+        .admin-footer {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 13px;
+            padding: 16px;
+        }
+
+        /* Thu gọn sidebar */
+        .admin-layout.sidebar-collapsed .admin-sidebar {
+            width: 92px;
+            padding-left: 12px;
+            padding-right: 12px;
+        }
+        .admin-layout.sidebar-collapsed .sidebar-brand-text,
+        .admin-layout.sidebar-collapsed .sidebar-link .link-label,
+        .admin-layout.sidebar-collapsed .sidebar-user-info {
+            display: none;
+        }
+        .admin-layout.sidebar-collapsed .sidebar-link .link-icon {
+            display: inline-flex;
+        }
+        .admin-layout.sidebar-collapsed .sidebar-top {
+            justify-content: center;
+        }
+        .admin-layout.sidebar-collapsed .sidebar-brand {
+            justify-content: center;
+        }
+        .admin-layout.sidebar-collapsed .sidebar-link {
+            justify-content: center;
+            padding: 13px 10px;
+        }
+        .admin-layout.sidebar-collapsed .sidebar-toggle i {
+            transform: rotate(180deg);
+        }
+
+        @media (max-width: 992px) {
+            .admin-layout { flex-direction: column; }
+            .admin-sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+            }
+            .sidebar-bottom { margin-top: 16px; }
+        }
+
+        /* Nút giống Lưu */
+        .btn-save {
+            background: #16a34a;
+            border: none;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+        .btn-save:hover {
+            background: #15803d;
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+        /* Màu loại rác thống nhất */
+        .waste-badge, .activity-badge {
+            display: inline-block;
+            padding: 8px 14px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .waste-plastic, .activity-badge.plastic { background: #dbeafe; color: #2563eb; }
+        .waste-paper, .activity-badge.paper { background: #fef3c7; color: #d97706; }
+        .waste-metal, .activity-badge.metal { background: #ffedd5; color: #c2410c; }
+        .waste-glass, .activity-badge.glass { background: #ede9fe; color: #7c3aed; }
+        .waste-biological, .activity-badge.biological { background: #dcfce7; color: #16a34a; }
+        .waste-trash, .activity-badge.trash { background: #f1f5f9; color: #475569; }
+        .waste-shoes, .activity-badge.shoes { background: #fce7f3; color: #db2777; }
+        .waste-clothes, .activity-badge.clothes { background: #fdf2f8; color: #be185d; }
+        .waste-battery, .activity-badge.battery { background: #fee2e2; color: #dc2626; }
+        .waste-multi, .activity-badge.multi { background: #e0e7ff; color: #4f46e5; }
+        .waste-other, .activity-badge.other { background: #f1f5f9; color: #64748b; }
+        .waste-logout, .activity-badge.logout { background: #f1f5f9; color: #64748b; }
+
+        .panel-title-inner {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .panel-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .panel-icon.green { background: #dcfce7; }
+        .panel-icon.amber { background: #ffedd5; }
+        .stats-icon-svg {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 14px;
+        }
+        .stats-icon-svg.green { background: #dcfce7; }
+        .stats-icon-svg.blue { background: #dbeafe; }
+        .stats-icon-svg.orange { background: #ffedd5; }
+        .stats-icon-svg.purple { background: #ede9fe; }
+    </style>
+    {% block page_styles %}{% endblock %}
+</head>
+<body>
+<div class="admin-layout" id="adminLayout">
+    <aside class="admin-sidebar">
+        <div class="sidebar-top">
+            <a href="{{ url_for('admin_dashboard') }}" class="sidebar-brand">
+                <div class="sidebar-brand-icon"><i class="fas fa-recycle"></i></div>
+                <div class="sidebar-brand-text">
+                    <div class="sub">Hệ thống</div>
+                    <div class="main">Phân Loại Rác</div>
+                </div>
+            </a>
+            <button type="button" class="sidebar-toggle" id="sidebarToggle" title="Thu gọn menu">
+                <i class="fas fa-angles-left"></i>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="{{ url_for('admin_dashboard') }}" class="sidebar-link {% if active_page == 'dashboard' %}active{% endif %}">
+                <i class="fas fa-house"></i><span class="link-label">Dashboard tổng quan</span>
+            </a>
+            <a href="{{ url_for('admin_users') }}" class="sidebar-link {% if active_page == 'users' %}active{% endif %}">
+                <span class="link-icon">
+                    <svg width="20" height="20" viewBox="0 0 40 40" fill="none">
+                        <circle cx="14" cy="14" r="5" stroke="#64748b" stroke-width="2"/>
+                        <circle cx="26" cy="12" r="4" stroke="#64748b" stroke-width="2"/>
+                        <path d="M8 30c0-4 4-6 8-6s8 2 8 6" stroke="#64748b" stroke-width="2"/>
+                    </svg>
+                </span>
+                <span class="link-label">Quản lý người dùng</span>
+            </a>
+            <a href="{{ url_for('admin_articles') }}" class="sidebar-link {% if active_page == 'articles' %}active{% endif %}">
+                <i class="fas fa-file-lines"></i><span class="link-label">Quản lý bài viết</span>
+            </a>
+            <a href="{{ url_for('admin_reports') }}" class="sidebar-link {% if active_page == 'reports' %}active{% endif %}">
+                <span class="link-icon">
+                    <svg width="20" height="20" viewBox="0 0 40 40" fill="none">
+                        <rect x="8" y="22" width="6" height="10" rx="1" fill="#64748b" opacity=".35"/>
+                        <rect x="17" y="14" width="6" height="18" rx="1" fill="#64748b"/>
+                        <rect x="26" y="8" width="6" height="24" rx="1" fill="#64748b" opacity=".7"/>
+                    </svg>
+                </span>
+                <span class="link-label">Thống kê và báo cáo</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="sidebar-user">
+                <div class="sidebar-user-avatar">{{ user.username[:1]|upper }}</div>
+                <div class="sidebar-user-info">
+                    <div class="sidebar-user-name">{{ user.username }}</div>
+                    <div class="sidebar-user-role">Quản trị viên</div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <div class="admin-main">
+        <header class="admin-topbar">
+            <button class="topbar-btn d-lg-none" type="button" id="sidebarToggleMobile" title="Menu">
+                <i class="fas fa-bars"></i>
+            </button>
+            <button class="topbar-btn" type="button" title="Thông báo">
+                <i class="fas fa-bell"></i>
+                <span class="topbar-badge">3</span>
+            </button>
+            <a href="{{ url_for('admin_users') }}" class="topbar-profile">
+                <i class="fas fa-user-shield"></i> {{ user.username }}
+                <i class="fas fa-chevron-down" style="font-size:12px;color:#94a3b8;"></i>
+            </a>
+            <a href="{{ url_for('logout') }}" class="btn-save">
+                <i class="fas fa-arrow-right-from-bracket"></i> Đăng xuất
+            </a>
+        </header>
+
+        <main class="admin-content">
+            {% block admin_content %}{% endblock %}
+        </main>
+
+        <footer class="admin-footer">
+            © 2026 Hệ thống phân loại rác. Tất cả quyền được bảo lưu.
+        </footer>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    (function () {
+        const layout = document.getElementById('adminLayout');
+        const toggle = document.getElementById('sidebarToggle');
+        const toggleMobile = document.getElementById('sidebarToggleMobile');
+        const storageKey = 'adminSidebarCollapsed';
+
+        if (localStorage.getItem(storageKey) === '1') {
+            layout.classList.add('sidebar-collapsed');
+        }
+
+        function toggleSidebar() {
+            layout.classList.toggle('sidebar-collapsed');
+            localStorage.setItem(storageKey, layout.classList.contains('sidebar-collapsed') ? '1' : '0');
+        }
+
+        if (toggle) toggle.addEventListener('click', toggleSidebar);
+        if (toggleMobile) toggleMobile.addEventListener('click', toggleSidebar);
+    })();
+</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

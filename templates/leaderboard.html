@@ -1,0 +1,369 @@
+{% extends "base.html" %}
+
+{% block title %}Bảng Xếp Hạng{% endblock %}
+
+{% block content %}
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    .ranking-page {
+        max-width: 1200px;
+        margin: auto;
+        padding: 40px 30px;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    /* HERO */
+    .ranking-hero {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 40px;
+        margin-bottom: 36px;
+        background: white;
+        border-radius: 24px;
+        padding: 36px 40px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, .05);
+    }
+
+    .hero-left {
+        flex: 1;
+    }
+
+    .hero-icon-wrap {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: #f0fdf4;
+        border: 2px solid #bbf7d0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        color: #16a34a;
+        margin-bottom: 18px;
+    }
+
+    .hero-left h1 {
+        font-size: 42px;
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0 0 12px 0;
+        line-height: 1.2;
+    }
+
+    .hero-left h1 span {
+        color: #16a34a;
+    }
+
+    .title-line {
+        width: 60px;
+        height: 4px;
+        background: #22c55e;
+        border-radius: 10px;
+        margin: 0 0 16px 0;
+    }
+
+    .hero-left p {
+        font-size: 15px;
+        color: #64748b;
+        line-height: 1.8;
+        max-width: 480px;
+        margin: 0;
+    }
+
+    .hero-right {
+        flex: 0 0 auto;
+        text-align: right;
+    }
+
+    .hero-right img {
+        width: 100%;
+        max-width: 550px;
+        height: auto;
+    }
+
+    /* LEADERBOARD CARD */
+    .leaderboard-card {
+        background: white;
+        border-radius: 24px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, .05);
+        overflow: hidden;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    .leaderboard-table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+    }
+
+    /* Tất cả th và td: chia đều 3 cột, căn giữa */
+    .leaderboard-table th,
+    .leaderboard-table td {
+        width: 33.333%;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    /* THEAD */
+    .leaderboard-table thead tr {
+        background: #16a34a;
+    }
+
+    .leaderboard-table thead th {
+        padding: 18px 24px;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: white;
+    }
+
+    .leaderboard-table thead th i {
+        margin-right: 6px;
+        opacity: 0.85;
+    }
+
+    /* TBODY */
+    .leaderboard-table tbody tr {
+        border-bottom: 1px solid #f1f5f9;
+        transition: background 0.2s;
+    }
+
+    .leaderboard-table tbody tr:last-child {
+        border-bottom: none;
+    }
+
+    .leaderboard-table tbody tr:hover {
+        background: #f8fff9 !important;
+    }
+
+    .leaderboard-table tbody td {
+        padding: 16px 24px;
+        font-size: 15px;
+        color: #1e293b;
+    }
+
+    /* TOP 3 */
+    .first-place {
+        background: #fffbeb;
+    }
+
+    .second-place {
+        background: #f8fafc;
+    }
+
+    .third-place {
+        background: #fff7f0;
+    }
+
+    /* RANK BADGE */
+    .rank-badge {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .rank-badge.gold {
+        background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    }
+
+    .rank-badge.silver {
+        background: linear-gradient(135deg, #d1d5db, #9ca3af);
+    }
+
+    .rank-badge.bronze {
+        background: linear-gradient(135deg, #cd7c3a, #92400e);
+    }
+
+    .rank-number {
+        font-size: 16px;
+        font-weight: 600;
+        color: #64748b;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+    }
+
+    /* USER CELL */
+    .user-info {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #dcfce7;
+        color: #16a34a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 15px;
+        flex-shrink: 0;
+    }
+
+    .avatar.av-gold {
+        background: #fef9c3;
+        color: #a16207;
+    }
+
+    .avatar.av-silver {
+        background: #f1f5f9;
+        color: #475569;
+    }
+
+    .avatar.av-bronze {
+        background: #ffedd5;
+        color: #c2410c;
+    }
+
+    .username-text {
+        font-size: 15px;
+        font-weight: 500;
+        color: #1e293b;
+    }
+
+    /* POINTS */
+    .points {
+        font-size: 16px;
+        font-weight: 700;
+        color: #16a34a;
+    }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+        .ranking-hero {
+            flex-direction: column;
+            text-align: center;
+            padding: 28px 24px;
+        }
+
+        .hero-icon-wrap {
+            margin: 0 auto 18px;
+        }
+
+        .hero-left h1 {
+            font-size: 32px;
+        }
+
+        .title-line {
+            margin: 0 auto 16px;
+        }
+
+        .hero-left p {
+            font-size: 14px;
+            max-width: 100%;
+        }
+
+        .hero-right {
+            display: none;
+        }
+
+        .leaderboard-table {
+            min-width: 560px;
+        }
+    }
+</style>
+
+<div class="ranking-page">
+
+    <!-- HERO -->
+    <div class="ranking-hero">
+        <div class="hero-left">
+            <div class="hero-icon-wrap">
+                <i class="fas fa-trophy"></i>
+            </div>
+            <h1>Bảng <span>Xếp Hạng</span></h1>
+            <div class="title-line"></div>
+            <p>
+                Xem bảng xếp hạng người dùng theo điểm tích lũy.
+                Mỗi hành động nhỏ góp phần tạo nên môi trường
+                xanh – sạch – đẹp.
+            </p>
+        </div>
+        <div class="hero-right">
+            <img src="{{ url_for('static', filename='uploads/cup.png') }}" alt="Podium">
+        </div>
+    </div>
+
+    <!-- LEADERBOARD TABLE -->
+    <div class="leaderboard-card">
+        <div class="table-responsive">
+            <table class="leaderboard-table">
+                <colgroup>
+                    <col style="width:33.333%">
+                    <col style="width:33.333%">
+                    <col style="width:33.333%">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-trophy"></i> THỨ HẠNG</th>
+                        <th><i class="fas fa-user"></i> USERNAME</th>
+                        <th><i class="fas fa-star"></i> POINTS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    {% set idx = loop.index %}
+                    <tr
+                        class="{% if idx == 1 %}first-place{% elif idx == 2 %}second-place{% elif idx == 3 %}third-place{% endif %}">
+
+                        <td>
+                            {% if idx == 1 %}
+                            <span class="rank-badge gold">1</span>
+                            {% elif idx == 2 %}
+                            <span class="rank-badge silver">2</span>
+                            {% elif idx == 3 %}
+                            <span class="rank-badge bronze">3</span>
+                            {% else %}
+                            <span class="rank-number">{{ idx }}</span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <div class="user-info">
+                                <div
+                                    class="avatar {% if idx == 1 %}av-gold{% elif idx == 2 %}av-silver{% elif idx == 3 %}av-bronze{% endif %}">
+                                    {{ user.username[0]|upper }}
+                                </div>
+                                <span class="username-text">{{ user.username }}</span>
+                            </div>
+                        </td>
+
+                        <td>
+                            <span class="points">{{ "{:,}".format(user.points) }}</span>
+                        </td>
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

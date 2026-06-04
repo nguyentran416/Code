@@ -1,0 +1,142 @@
+{% extends "admin_base.html" %}
+{% block title %}Quản lý bài viết{% endblock %}
+
+{% block admin_content %}
+
+<!-- Toast notification container -->
+<div id="toastContainer" style="position:fixed;top:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:10px;"></div>
+
+<style>
+.toast-notif {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    border-radius: 16px;
+    font-weight: 600;
+    font-size: 15px;
+    min-width: 280px;
+    max-width: 420px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    animation: toastIn 0.35s cubic-bezier(.22,1,.36,1);
+    transition: opacity 0.4s, transform 0.4s;
+}
+.toast-notif.success { background: #16a34a; color: #fff; }
+.toast-notif.danger  { background: #dc2626; color: #fff; }
+.toast-notif.warning { background: #d97706; color: #fff; }
+.toast-notif.info    { background: #2563eb; color: #fff; }
+.toast-notif .toast-icon { font-size: 20px; flex-shrink: 0; }
+.toast-notif .toast-close {
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.8);
+    cursor: pointer;
+    font-size: 18px;
+    padding: 0 0 0 8px;
+    line-height: 1;
+}
+.toast-notif .toast-close:hover { color: #fff; }
+@keyframes toastIn {
+    from { opacity: 0; transform: translateX(60px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+</style>
+
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+    <div>
+        <h1 style="font-size:28px;font-weight:800;margin-bottom:6px;">Quản lý bài viết</h1>
+        <p class="text-muted mb-0">Thêm, sửa, xóa và quản lý bài viết hiển thị ở trang Tin tức.</p>
+    </div>
+    <a href="{{ url_for('admin_article_new') }}" class="btn-save">
+        <i class="fas fa-plus"></i> Thêm bài viết
+    </a>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<script>
+(function() {
+    var messages = [
+        {% for category, message in messages %}
+        { category: "{{ category }}", message: "{{ message }}" }{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ];
+    var icons = { success: 'fa-circle-check', danger: 'fa-circle-xmark', warning: 'fa-triangle-exclamation', info: 'fa-circle-info' };
+    var container = document.getElementById('toastContainer');
+    messages.forEach(function(m) {
+        var cat = m.category === 'warning' ? 'warning' : m.category;
+        var icon = icons[cat] || 'fa-circle-info';
+        var el = document.createElement('div');
+        el.className = 'toast-notif ' + cat;
+        el.innerHTML =
+            '<i class="fas ' + icon + ' toast-icon"></i>' +
+            '<span>' + m.message + '</span>' +
+            '<button class="toast-close" onclick="this.parentElement.remove()">&times;</button>';
+        container.appendChild(el);
+        setTimeout(function() {
+            el.style.opacity = '0';
+            el.style.transform = 'translateX(60px)';
+            setTimeout(function() { el.remove(); }, 400);
+        }, 4000);
+    });
+})();
+</script>
+{% endif %}
+{% endwith %}
+
+<div class="card shadow-sm border-0" style="border-radius:20px; overflow:hidden;">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Tiêu đề</th>
+                        <th>Danh mục</th>
+                        <th>Ngày đăng</th>
+                        <th>Lượt xem</th>
+                        <th>Trạng thái</th>
+                        <th class="text-end">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for article in articles %}
+                    <tr>
+                        <td>{{ article.id }}</td>
+                        <td>
+                            <div class="fw-semibold">{{ article.title }}</div>
+                            <div class="text-muted small text-truncate" style="max-width: 420px;">{{ article.summary }}</div>
+                        </td>
+                        <td>{{ article.category }}</td>
+                        <td>{{ article.created_at_text }}</td>
+                        <td>{{ article.views }}</td>
+                        <td>
+                            {% if article.status == 'published' %}
+                                <span class="badge text-bg-success">Published</span>
+                            {% else %}
+                                <span class="badge text-bg-secondary">Draft</span>
+                            {% endif %}
+                            {% if article.is_featured %}
+                                <span class="badge text-bg-warning ms-1">Featured</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            <a href="{{ url_for('news_detail', slug=article.slug) }}" class="btn btn-sm btn-outline-success me-1" target="_blank" rel="noopener noreferrer">Xem</a>
+                            <a href="{{ url_for('admin_article_edit', article_id=article.id) }}" class="btn btn-sm btn-outline-primary me-1">Sửa</a>
+                            <form method="post" action="{{ url_for('admin_article_delete', article_id=article.id) }}" class="d-inline" onsubmit="return confirm('Xóa bài viết này?');">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Xóa</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-5">Chưa có bài viết nào.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

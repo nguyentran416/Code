@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Đăng ký - Hệ thống phân loại rác thải</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+            font-family:'Inter',sans-serif;
+            min-height:100vh;
+            background:#eef7ee;
+            overflow:hidden;
+            height:100vh;
+            position:relative;
+        }
+
+        /* ===== Logo ===== */
+
+        .logo{
+            position:fixed;
+            top:18px;
+            left:28px;
+            width:62px;
+            height:62px;
+            border-radius:10px;
+            overflow:hidden;
+            background:#fff;
+            border:2px solid #cfe7cf;
+            z-index:100;
+        }
+
+        .logo img{
+            width:100%;
+            height:100%;
+            object-fit:cover;
+        }
+
+        /* ===== Background decor (giống login.html) ===== */
+
+        .circle-bg{
+            position:absolute;
+            right:-150px;
+            top:50%;
+            transform:translateY(-50%);
+            width:800px;
+            height:800px;
+            border-radius:50%;
+            border:2px dashed rgba(95,180,95,.18);
+            z-index:0;
+        }
+
+        .wave{
+            position:absolute;
+            bottom:-120px;
+            right:-120px;
+            width:700px;
+            height:350px;
+            background:rgba(255,255,255,.45);
+            border-radius:50%;
+            z-index:0;
+        }
+
+        .dots{
+            position:absolute;
+            top:130px;
+            left:50%;
+            transform:translateX(-50%);
+            display:grid;
+            grid-template-columns:repeat(6,10px);
+            gap:10px;
+            z-index:0;
+        }
+
+        .dots span{
+            width:6px;
+            height:6px;
+            background:#97d697;
+            border-radius:50%;
+            opacity:.6;
+        }
+
+        .ball{
+            position:absolute;
+            border-radius:50%;
+            z-index:0;
+        }
+
+        .ball2{
+            width:32px;
+            height:32px;
+            background:#95d86d;
+            right:140px;
+            top:180px;
+        }
+
+        /* ===== Main Layout ===== */
+
+        .main-container{
+            width:100%;
+            height:100vh;
+
+            display:flex;
+            align-items:center;
+            justify-content:center;
+
+            padding-left:80px;
+            padding-right:60px;
+
+            position:relative;
+            z-index:2;
+        }
+
+        .content{
+            width:100%;
+            max-width:1450px;
+
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+
+            gap:120px;
+        }
+
+        /* ===== LEFT ===== */
+
+        .left-column{
+            flex:1;
+
+            display:flex;
+            align-items:center;
+
+            gap:40px;
+
+            position:relative;
+        }
+
+        /* ===== Illustration (giống login.html) ===== */
+
+        .left-image{
+            flex:0 0 380px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            position:relative;
+            background:#eef7ee;
+            border-radius:32px;
+            padding:18px;
+            overflow:hidden;
+            min-width:380px;
+            min-height:380px;
+        }
+
+        .left-image img{
+            width:100%;
+            max-width:420px;
+            display:block;
+            border-radius:22px;
+            filter:drop-shadow(0 10px 25px rgba(76,175,80,.18));
+            animation:floatImage 4s ease-in-out infinite;
+        }
+
+        @keyframes floatImage{
+            0%{
+                transform:translateY(0px);
+            }
+            50%{
+                transform:translateY(-10px);
+            }
+            100%{
+                transform:translateY(0px);
+            }
+        }
+
+        /* ===== Text ===== */
+
+        .text-content{
+            max-width:430px;
+        }
+
+        .main-title{
+            font-size:4rem;
+            line-height:1.1;
+            font-weight:800;
+            color:#10243c;
+            margin-bottom:22px;
+        }
+
+        .main-title span{
+            color:#57b96c;
+        }
+
+        .title-line{
+            width:55px;
+            height:5px;
+            background:#57b96c;
+            border-radius:20px;
+            margin-bottom:25px;
+        }
+
+        .sub-description{
+            color:#5f6764;
+            line-height:1.9;
+            font-size:1rem;
+            margin-bottom:40px;
+        }
+
+        /* ===== Features ===== */
+
+        .feature-box{
+            display:flex;
+            align-items:flex-start;
+            margin-bottom:28px;
+        }
+
+        .feature-icon{
+            width:54px;
+            height:54px;
+
+            border-radius:14px;
+
+            background:#eef7ec;
+
+            display:flex;
+            align-items:center;
+            justify-content:center;
+
+            color:#62b96f;
+
+            font-size:1.25rem;
+
+            margin-right:18px;
+
+            flex-shrink:0;
+        }
+
+        .feature-text h5{
+            font-size:1rem;
+            color:#4aa05c;
+            margin-bottom:5px;
+            font-weight:700;
+        }
+
+        .feature-text p{
+            font-size:0.92rem;
+            color:#707a74;
+            margin:0;
+        }
+
+        /* ===== RIGHT ===== */
+
+        .right-column{
+            flex:0 0 430px;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+        }
+
+        /* ===== Card ===== */
+
+        .form-card{
+            width:100%;
+
+            background:rgba(255,255,255,0.78);
+
+            backdrop-filter:blur(10px);
+
+            border-radius:28px;
+
+            padding:45px 35px;
+
+            box-shadow:
+                0 10px 40px rgba(0,0,0,0.06);
+
+            position:relative;
+        }
+
+        /* ===== Floating Leaves ===== */
+
+        .leaf-1{
+            position:absolute;
+            top:80px;
+            right:45px;
+            color:#9fd89c;
+            font-size:1.8rem;
+            transform:rotate(20deg);
+        }
+
+        .leaf-2{
+            position:absolute;
+            top:78px;
+            left:55px;
+            color:#b8ddb8;
+            font-size:0.6rem;
+        }
+
+        .leaf-3{
+            position:absolute;
+            top:95px;
+            left:72px;
+            color:#b8ddb8;
+            font-size:0.6rem;
+        }
+
+        /* ===== Icon ===== */
+
+        .form-icon{
+            width:82px;
+            height:82px;
+
+            background:#f0f7ef;
+
+            border-radius:50%;
+
+            display:flex;
+            align-items:center;
+            justify-content:center;
+
+            margin:0 auto 22px;
+
+            color:#59b96b;
+            font-size:2.5rem;
+        }
+
+        /* ===== Title ===== */
+
+        .form-title{
+            text-align:center;
+            font-size:3rem;
+            font-weight:800;
+            color:#1a2d40;
+            margin-bottom:35px;
+        }
+
+        /* ===== Inputs ===== */
+
+        .input-group-custom{
+            position:relative;
+            margin-bottom:18px;
+        }
+
+        .input-group-custom i{
+            position:absolute;
+            top:50%;
+            left:18px;
+            transform:translateY(-50%);
+            color:#67b56e;
+            font-size:1rem;
+        }
+
+        .input-group-custom input{
+            width:100%;
+            height:55px;
+
+            border:2px solid #e1eee1;
+
+            border-radius:14px;
+
+            padding-left:50px;
+
+            outline:none;
+
+            font-size:1rem;
+
+            background:white;
+
+            transition:0.3s;
+        }
+
+        .input-group-custom input:focus{
+            border-color:#62b96f;
+            box-shadow:0 0 0 4px rgba(98,185,111,0.12);
+        }
+
+        /* ===== Button ===== */
+
+        .btn-register{
+            width:100%;
+            height:56px;
+
+            border:none;
+
+            border-radius:14px;
+
+            background:linear-gradient(to right,#0d8b42,#16a34a);
+
+            color:white;
+
+            font-size:1.08rem;
+            font-weight:700;
+
+            margin-top:8px;
+
+            transition:0.3s;
+
+            box-shadow:
+                0 8px 20px rgba(16,140,60,0.25);
+        }
+
+        .btn-register:hover{
+            transform:translateY(-2px);
+        }
+
+        /* ===== Footer ===== */
+
+        .footer-text{
+            text-align:center;
+            margin-top:22px;
+            color:#444;
+            font-size:0.96rem;
+        }
+
+        .footer-text a{
+            color:#2e9f51;
+            text-decoration:none;
+            font-weight:700;
+        }
+
+        /* ===== Responsive ===== */
+
+        @media(max-width:1100px){
+
+            body{
+                overflow:auto;
+            }
+
+            .main-container{
+                height:auto;
+                padding:120px 30px 60px;
+            }
+
+            .content{
+                flex-direction:column;
+                gap:50px;
+            }
+
+            .left-column{
+                flex-direction:column;
+                text-align:center;
+            }
+
+            .title-line{
+                margin:auto auto 25px;
+            }
+
+            .feature-box{
+                justify-content:center;
+                text-align:left;
+            }
+        }
+
+        @media(max-width:768px){
+
+            .main-title{
+                font-size:2.7rem;
+            }
+
+            .form-title{
+                font-size:2.2rem;
+            }
+
+            .right-column{
+                width:100%;
+                max-width:430px;
+            }
+
+            .left-image{
+                min-width:280px;
+                min-height:280px;
+                flex:0 0 280px;
+            }
+
+            .left-image img{
+                max-width:300px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<!-- background -->
+<div class="circle-bg"></div>
+<div class="wave"></div>
+
+<div class="dots">
+    <span></span><span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span><span></span>
+</div>
+
+<div class="ball ball2"></div>
+
+<!-- logo -->
+<div class="logo">
+    <img src="/static/uploads/logo-dai-hoc-cong-nghiep-ha-noi-inkythuatso-01-21-15-51-20.jpg" alt="logo">
+</div>
+
+    <div class="main-container">
+
+    <div class="content">
+
+        <!-- LEFT -->
+        <div class="left-column">
+
+            <!-- Illustration -->
+            <div class="left-image">
+                <img src="/static/uploads/256de136-d5c8-41f2-8044-2f2b523100d21.png" alt="Eco Green">
+            </div>
+
+            <!-- Text -->
+            <div class="text-content">
+
+                <h1 class="main-title">
+                    HỆ THỐNG<br>
+                    PHÂN LOẠI<br>
+                    <span>RÁC THẢI</span>
+                </h1>
+
+                <div class="title-line"></div>
+
+                <p class="sub-description">
+                    Ứng dụng trí tuệ nhân tạo giúp nhận diện
+                    và phân loại rác thải tự động, góp phần
+                    bảo vệ môi trường xanh – sạch – đẹp.
+                </p>
+
+                <div class="feature-box">
+
+                    <div class="feature-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+
+                    <div class="feature-text">
+                        <h5>Nhận diện thông minh</h5>
+                        <p>AI phân loại rác nhanh chóng và chính xác</p>
+                    </div>
+
+                </div>
+
+                <div class="feature-box">
+
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+
+                    <div class="feature-text">
+                        <h5>Bảo vệ môi trường</h5>
+                        <p>Cùng chung tay xây dựng môi trường xanh</p>
+                    </div>
+
+                </div>
+
+                <div class="feature-box">
+
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+
+                    <div class="feature-text">
+                        <h5>Thống kê trực quan</h5>
+                        <p>Theo dõi và quản lý dữ liệu dễ dàng</p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT -->
+        <div class="right-column">
+
+            <div class="form-card">
+
+                <div class="leaf-1">
+                    <i class="fas fa-leaf"></i>
+                </div>
+
+                <div class="leaf-2">
+                    <i class="fas fa-circle"></i>
+                </div>
+
+                <div class="leaf-3">
+                    <i class="fas fa-circle"></i>
+                </div>
+
+                <div class="form-icon">
+                    <i class="fas fa-leaf"></i>
+                </div>
+
+                <h2 class="form-title">Đăng ký</h2>
+
+                <form method="POST" action="/register">
+
+                    <div class="input-group-custom">
+                        <i class="fas fa-user"></i>
+                        <input type="text" name="username" placeholder="Tên tài khoản" required>
+                    </div>
+
+                    <div class="input-group-custom">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" name="email" placeholder="Email" required>
+                    </div>
+
+                    <div class="input-group-custom">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" name="password" placeholder="Mật khẩu" required>
+                    </div>
+
+                    <div class="input-group-custom">
+                        <i class="fas fa-phone"></i>
+                        <input type="text" name="phone" placeholder="Số điện thoại" required>
+                    </div>
+
+                    <div class="input-group-custom">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <input type="text" name="address" placeholder="Địa chỉ" required>
+                    </div>
+
+                    <button type="submit" class="btn-register">
+                        Đăng ký
+                    </button>
+
+                </form>
+
+                <div class="footer-text">
+                    Đã có tài khoản?
+                    <a href="/login">Đăng nhập ngay</a>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    </div>
+
+</body>
+</html>

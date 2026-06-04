@@ -1,0 +1,437 @@
+{% extends "admin_base.html" %}
+{% block title %}Dashboard tổng quan{% endblock %}
+
+{% block page_styles %}
+<style>
+    .page-header h1 {
+        font-size: 30px;
+        font-weight: 800;
+        margin-bottom: 6px;
+    }
+    .page-header p {
+        color: #64748b;
+        margin: 0;
+        font-size: 15px;
+    }
+    .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+        margin: 22px 0 20px;
+    }
+    .kpi-card {
+        background: #fff;
+        border: 1px solid #e8edf3;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+        min-height: 130px;
+    }
+    .kpi-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 12px;
+    }
+    .kpi-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 19px;
+    }
+    .kpi-icon.blue { background: #dbeafe; color: #2563eb; }
+    .kpi-icon.green { background: #dcfce7; color: #16a34a; }
+    .kpi-icon.orange { background: #ffedd5; color: #ea580c; }
+    .kpi-icon.purple { background: #ede9fe; color: #7c3aed; }
+    .kpi-trend {
+        font-size: 12px;
+        font-weight: 700;
+        color: #16a34a;
+        background: #ecfdf3;
+        padding: 4px 8px;
+        border-radius: 999px;
+    }
+    .kpi-value {
+        font-size: 28px;
+        font-weight: 800;
+        color: #0f172a;
+        line-height: 1.1;
+    }
+    .kpi-label {
+        margin-top: 4px;
+        color: #64748b;
+        font-size: 13px;
+    }
+    .panel-grid {
+        display: grid;
+        grid-template-columns: 1.55fr 1fr;
+        gap: 16px;
+        margin-bottom: 16px;
+        align-items: stretch;
+    }
+    .panel-card {
+        background: #fff;
+        border: 1px solid #e8edf3;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+        display: flex;
+        flex-direction: column;
+    }
+    .panel-card h3 {
+        font-size: 17px;
+        font-weight: 700;
+        margin-bottom: 16px;
+    }
+    .panel-card.chart-line {
+        min-height: 340px;
+    }
+    .panel-card.chart-donut {
+        min-height: 340px;
+    }
+    .chart-line-body {
+        flex: 1;
+        min-height: 260px;
+        position: relative;
+    }
+    .donut-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        flex: 1;
+        min-height: 260px;
+    }
+    .donut-chart-box {
+        flex: 0 0 220px;
+        width: 220px;
+        height: 220px;
+        position: relative;
+    }
+    .donut-legend {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 14px;
+        min-width: 0;
+    }
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #334155;
+    }
+    .legend-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+    .legend-dot--organic { background: #22c55e; }
+    .legend-dot--recyclable { background: #3b82f6; }
+    .legend-dot--inorganic { background: #f59e0b; }
+    .legend-dot--hazardous { background: #ef4444; }
+    .waste-bar-fill {
+        display: block;
+        height: 100%;
+        border-radius: 999px;
+        width: 0;
+    }
+    .waste-bar--paper { background: #3b82f6; }
+    .waste-bar--plastic { background: #06b6d4; }
+    .waste-bar--metal { background: #f59e0b; }
+    .waste-bar--glass { background: #8b5cf6; }
+    .waste-bar--biological { background: #22c55e; }
+    .waste-bar--trash { background: #94a3b8; }
+    .waste-bar--shoes { background: #06b6d4; } 
+    .waste-bar--clothes { background: #ec4899; }
+    .waste-bar--battery { background: #ef4444; }
+    .legend-meta {
+        font-size: 13px;
+        font-weight: 500;
+        color: #64748b;
+    }
+    .bottom-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+    .bottom-grid .panel-card {
+        min-height: 320px;
+    }
+    .waste-item + .waste-item { margin-top: 18px; }
+    .waste-item-head {
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #334155;
+    }
+    .waste-bar {
+        height: 12px;
+        background: #eef2f7;
+        border-radius: 999px;
+        overflow: hidden;
+    }
+    .waste-bar > span {
+        display: block;
+        height: 100%;
+        border-radius: 999px;
+        transition: width 0.3s ease;
+    }
+    .activity-item {
+        display: flex;
+        gap: 14px;
+        padding: 12px 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    .activity-item:last-child { border-bottom: none; }
+    .activity-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+    .activity-icon.blue { background: #dbeafe; color: #2563eb; }
+    .activity-icon.gray { background: #f1f5f9; color: #64748b; }
+    .activity-icon.neutral { background: #ecfdf3; color: #16a34a; }
+    .activity-text {
+        font-size: 14px;
+        color: #334155;
+        line-height: 1.5;
+    }
+    .activity-time {
+        font-size: 12px;
+        color: #94a3b8;
+        margin-top: 4px;
+    }
+    .activity-panel {
+        display: flex;
+        flex-direction: column;
+        min-height: 320px;
+    }
+    .activity-panel h3 {
+        flex-shrink: 0;
+        margin-bottom: 8px;
+    }
+    .activity-feed-scroll {
+        flex: 1;
+        min-height: 0;
+        max-height: 248px;
+        overflow-y: hidden;
+        overflow-x: hidden;
+        padding-right: 2px;
+        margin-right: -2px;
+    }
+    .activity-feed-scroll:hover {
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: #cbd5e1 transparent;
+    }
+    .activity-feed-scroll:focus {
+        outline: none;
+    }
+    .activity-feed-scroll:hover::-webkit-scrollbar {
+        width: 6px;
+    }
+    .activity-feed-scroll:hover::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 999px;
+    }
+    .activity-feed-scroll:hover::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    @media (max-width: 1200px) {
+        .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+        .panel-grid, .bottom-grid { grid-template-columns: 1fr; }
+        .donut-row { flex-direction: column; justify-content: center; }
+        .donut-legend { width: 100%; }
+    }
+    @media (max-width: 576px) {
+        .kpi-grid { grid-template-columns: 1fr; }
+    }
+</style>
+{% endblock %}
+
+{% block admin_content %}
+<div class="page-header">
+    <h1>Chào mừng trở lại, {{ user.username }}! 👋</h1>
+    <p>Đây là tổng quan hoạt động của hệ thống phân loại rác.</p>
+</div>
+
+<div class="kpi-grid">
+    {% for kpi in kpis %}
+    <div class="kpi-card">
+        <div class="kpi-top">
+            <div class="kpi-icon {{ kpi.tone }}"><i class="fas {{ kpi.icon }}"></i></div>
+            <span class="kpi-trend">{{ kpi.trend }}</span>
+        </div>
+        <div class="kpi-value">{{ kpi.value }}</div>
+        <div class="kpi-label">{{ kpi.label }}</div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="panel-grid">
+    <div class="panel-card chart-line">
+        <h3>Lượt phân loại theo thời gian</h3>
+        <div class="chart-line-body">
+            <canvas id="lineChart"></canvas>
+        </div>
+    </div>
+    <div class="panel-card chart-donut">
+        <h3>Tỷ lệ rác theo loại</h3>
+        <div class="donut-row">
+            <div class="donut-chart-box">
+                <canvas id="donutChart"></canvas>
+            </div>
+            <div class="donut-legend">
+                {% for item in category_stats %}
+                <div class="legend-item">
+                    <span class="legend-dot legend-dot--{{ item.key }}"></span>
+                    <div>
+                        <div>{{ item.label }}</div>
+                        <div class="legend-meta">{{ item.percent }}% · {{ item.count }} lượt</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bottom-grid">
+    <div class="panel-card">
+        <h3>Các loại rác phổ biến</h3>
+        {% for item in waste_stats %}
+        <div class="waste-item">
+            <div class="waste-item-head">
+                <span>{{ item.waste_type_vn }}</span>
+                <span>{{ item.percent }}% ({{ item.count }})</span>
+            </div>
+            <div class="waste-bar">
+                <span class="waste-bar-fill waste-bar--{{ item.waste_type }}"
+                      data-percent="{{ item.percent }}"></span>
+            </div>
+        </div>
+        {% else %}
+        <p class="text-muted mb-0">Chưa có dữ liệu phân loại.</p>
+        {% endfor %}
+    </div>
+
+    <div class="panel-card activity-panel">
+        <h3>Hoạt động gần đây</h3>
+        {% if recent_rows %}
+        <div class="activity-feed-scroll" tabindex="0">
+            {% for row in recent_rows %}
+            <div class="activity-item">
+                <div class="activity-icon {{ row.tone }}"><i class="fas {{ row.icon }}"></i></div>
+                <div>
+                    <div class="activity-text">{{ row.message|safe }}</div>
+                    <div class="activity-time">{{ row.time_ago }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-muted mb-0">Chưa có hoạt động nào.</p>
+        {% endif %}
+    </div>
+</div>
+
+<script type="application/json" id="dashboardChartData">
+{{ {"labels": chart_labels, "values": chart_values, "categories": category_stats}|tojson }}
+</script>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+    const dashboardData = JSON.parse(
+        document.getElementById('dashboardChartData').textContent
+    );
+    const chartLabels = dashboardData.labels;
+    const chartValues = dashboardData.values;
+    const categoryStats = dashboardData.categories;
+
+    document.querySelectorAll('.waste-bar-fill').forEach(function (bar) {
+        const percent = parseFloat(bar.dataset.percent || '0');
+        bar.style.width = Math.min(Math.max(percent, 0), 100) + '%';
+    });
+
+    new Chart(document.getElementById('lineChart'), {
+        type: 'line',
+        data: {
+            labels: chartLabels,
+            datasets: [{
+                label: 'Lượt phân loại',
+                data: chartValues,
+                borderColor: '#22c55e',
+                backgroundColor: 'rgba(34, 197, 94, 0.14)',
+                fill: true,
+                tension: 0.35,
+                pointRadius: 4,
+                pointBackgroundColor: '#16a34a'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, ticks: { precision: 0 }, grid: { color: '#f1f5f9' } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+
+    new Chart(document.getElementById('donutChart'), {
+        type: 'doughnut',
+        data: {
+            labels: categoryStats.map(item => item.label),
+            datasets: [{
+                data: categoryStats.map(item => item.count),
+                backgroundColor: categoryStats.map(item => item.color),
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '68%',
+            plugins: {
+                legend: { display: false },
+                tooltip: { enabled: true }
+            }
+        },
+        plugins: [{
+            id: 'centerText',
+            beforeDraw(chart) {
+                const { ctx, chartArea: { top, bottom, left, right } } = chart;
+                const total = categoryStats.reduce((sum, item) => sum + item.count, 0);
+                ctx.save();
+                ctx.font = 'bold 20px Be Vietnam Pro';
+                ctx.fillStyle = '#0f172a';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(total.toString(), (left + right) / 2, (top + bottom) / 2 - 8);
+                ctx.font = '12px Be Vietnam Pro';
+                ctx.fillStyle = '#64748b';
+                ctx.fillText('Tổng', (left + right) / 2, (top + bottom) / 2 + 12);
+                ctx.restore();
+            }
+        }]
+    });
+</script>
+{% endblock %}

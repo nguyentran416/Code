@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phân loại rác thải</title>
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='\style.css') }}">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center text-primary">Danh sách các loại rác</h1>
+        <div class="row">
+            {% for waste in waste_data %}
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary">
+                            <a href="{{ url_for('waste_detail', waste_id=waste['id']) }}">{{ waste['name'] }}</a>
+                        </h5>
+                        <p class="card-text">{{ waste['description'] }}</p>
+                        <a href="{{ url_for('waste_detail', waste_id=waste['id']) }}" class="btn btn-outline-primary">Xem chi tiết</a>
+                    </div>
+                </div>
+            </div>
+          {% endfor %}
+        </div>
+    </div>
+
+    <!-- Loading Animation -->
+    <div id="loading" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 9999; background-color: rgba(255, 255, 255, 0.8); padding: 20px; border-radius: 10px;">
+        <div style="border: 8px solid #f3f3f3; border-top: 8px solid #3498db; border-radius: 50%; width: 50px; height: 50px; animation: spin 2s linear infinite;"></div>
+        <p>Đang xử lý...</p>
+    </div>
+
+    <footer class="footer text-center">
+        <p>&copy; 2026 Phân Loại Rác. <a href="/">Trang chủ</a></p>
+    </footer>
+
+    <style>
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.querySelector("form");
+            const loading = document.getElementById("loading");
+
+            if (form) {
+                form.addEventListener("submit", function () {
+                    loading.style.display = "block"; // Hiện animation khi form được submit
+                });
+            }
+        });
+    </script>
+</body>
+</html>

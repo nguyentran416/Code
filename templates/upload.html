@@ -1,0 +1,866 @@
+{% extends "base.html" %}
+{% block title %}Phân Loại Rác{% endblock %}
+
+{% block content %}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #f0fdf4 100%);
+    }
+
+    /* ── WRAPPER ── */
+    .classify-wrapper {
+        padding: 48px 40px 60px;
+    }
+
+    /* ── HERO ── */
+    .hero-section {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .hero-title {
+        font-size: 54px;
+        font-weight: 800;
+        line-height: 1.1;
+        color: #0f172a;
+        margin-bottom: 16px;
+    }
+
+    .hero-title .green {
+        color: #16a34a;
+    }
+
+    .hero-desc {
+        color: #64748b;
+        font-size: 16px;
+        line-height: 1.7;
+        max-width: 560px;
+        margin: 0 auto;
+    }
+
+    /* ── COLUMN LABELS ── */
+    .col-label {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px 16px;
+        border-radius: 12px;
+        background: #ffffff;
+        border: 1px solid #d1fae5;
+        font-weight: 700;
+        font-size: 15px;
+        color: #16a34a;
+        box-shadow: 0 2px 10px rgba(22,163,74,0.07);
+        margin-bottom: 14px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* ── FEATURE CARDS ── */
+    .col-wrapper {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .feature-card {
+        background: #ffffff;
+        border: 1px solid #e2f0e5;
+        border-radius: 20px;
+        padding: 28px 24px;
+        box-shadow: 0 8px 28px rgba(0,0,0,0.05);
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .card-top {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .card-icon-circle {
+        width: 68px;
+        height: 68px;
+        border-radius: 50%;
+        background: #ecfdf3;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        margin: 0 auto 14px;
+        box-shadow: 0 4px 14px rgba(22,163,74,0.12);
+    }
+
+    .card-title {
+        font-size: 20px;
+        font-weight: 800;
+        color: #111827;
+        margin-bottom: 6px;
+    }
+
+    .card-subtitle {
+        font-size: 14px;
+        color: #64748b;
+        margin: 0;
+    }
+
+    /* ── CAMERA VIEWFINDER ── */
+    .camera-viewfinder {
+        width: 100%;
+        flex: 1;
+        min-height: 260px;
+        background: #030303;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+        position: relative;
+    }
+
+    .camera-viewfinder video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        background: #000;
+    }
+
+    .capture-btn-wrap {
+        text-align: center;
+        margin-top: 18px;
+    }
+
+    .capture-btn {
+        background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+        border: none;
+        border-radius: 999px;
+        padding: 12px 30px;
+        color: #fff;
+        font-weight: 700;
+        font-size: 15px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: 0 4px 14px rgba(22,163,74,0.35);
+        cursor: pointer;
+    }
+
+    .capture-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(22,163,74,0.45);
+    }
+
+    /* ── PREVIEW (shared) ── */
+    .img-preview-wrap {
+        position: relative;
+        width: 100%;
+        flex: 1;
+        min-height: 260px;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        background: #000;
+    }
+
+    .img-preview-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .img-preview-close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #ffffff;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        font-weight: 700;
+        color: #374151;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.20);
+        transition: background 0.15s, transform 0.15s;
+        z-index: 10;
+        line-height: 1;
+    }
+
+    .img-preview-close:hover {
+        background: #f3f4f6;
+        transform: scale(1.1);
+    }
+
+    .secondary-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #f0fdf4;
+        border: 1.5px solid #86efac;
+        border-radius: 999px;
+        padding: 8px 20px;
+        color: #15803d;
+        font-weight: 700;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background 0.2s, border-color 0.2s, transform 0.15s;
+    }
+
+    .secondary-btn:hover {
+        background: #dcfce7;
+        border-color: #4ade80;
+        transform: translateY(-1px);
+    }
+
+    /* ── UPLOAD DROPZONE ── */
+    .upload-dropzone {
+        border: 2px dashed #22c55e;
+        border-radius: 16px;
+        padding: 36px 20px;
+        text-align: center;
+        background: #f8fff9;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        transition: background 0.2s;
+    }
+
+    .upload-dropzone:hover {
+        background: #f0fdf4;
+    }
+
+    .dropzone-cloud-icon {
+        font-size: 40px;
+        color: #16a34a;
+        margin-bottom: 8px;
+        line-height: 1;
+    }
+
+    .dropzone-title {
+        font-size: 16px;
+        font-weight: 800;
+        color: #111827;
+        margin: 0 0 4px;
+    }
+
+    .dropzone-note {
+        font-size: 13px;
+        color: #64748b;
+        margin: 0 0 16px;
+    }
+
+    .upload-file-input {
+        max-width: 320px;
+        border: 1px solid #d1fae5;
+        border-radius: 10px;
+        background: #fff;
+        font-size: 14px;
+    }
+
+    .upload-hint {
+        font-size: 12px;
+        color: #94a3b8;
+        margin-top: 6px;
+    }
+
+    /* ── MODE SECTION ── */
+    .mode-section-card {
+        background: #ffffff;
+        border: 1px solid #e2f0e5;
+        border-radius: 20px;
+        padding: 24px 28px;
+        box-shadow: 0 8px 28px rgba(0,0,0,0.04);
+        margin-top: 20px;
+    }
+
+    .section-heading {
+        text-align: center;
+        font-size: 18px;
+        font-weight: 800;
+        color: #111827;
+        margin-bottom: 18px;
+    }
+
+    .mode-options-row {
+        display: flex;
+        gap: 16px;
+    }
+
+    .mode-option {
+        flex: 1;
+        border: 1.5px solid #d1d5db;
+        border-radius: 16px;
+        padding: 16px 18px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: #fff;
+        cursor: pointer;
+        transition: border-color 0.2s, background 0.2s;
+    }
+
+    .mode-option.active {
+        border-color: #16a34a;
+        background: #f0fdf4;
+    }
+
+    .mode-option .form-check-input {
+        margin-top: 0;
+        flex-shrink: 0;
+        accent-color: #16a34a;
+        width: 18px;
+        height: 18px;
+    }
+
+    .mode-option-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #ecfdf3;
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+
+    .mode-option-body {}
+
+    .mode-option-title {
+        font-weight: 800;
+        font-size: 15px;
+        color: #111827;
+        margin-bottom: 2px;
+    }
+
+    .mode-option.active .mode-option-title {
+        color: #16a34a;
+    }
+
+    .mode-option-desc {
+        font-size: 13px;
+        color: #64748b;
+        line-height: 1.4;
+    }
+
+    /* ── SUBMIT BTN ── */
+    .submit-btn-wrap {
+        margin-top: 16px;
+    }
+
+    .submit-btn {
+        display: block;
+        width: 100%;
+        background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+        border: none;
+        border-radius: 14px;
+        padding: 16px;
+        color: #fff;
+        font-weight: 800;
+        font-size: 17px;
+        text-align: center;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s;
+        box-shadow: 0 6px 20px rgba(22,163,74,0.38);
+    }
+
+    .submit-btn:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 28px rgba(22,163,74,0.46);
+    }
+
+    .submit-btn:disabled {
+        opacity: 0.65;
+        cursor: not-allowed;
+    }
+
+    /* ── TIPS SECTION ── */
+    .tips-section-card {
+        background: #ffffff;
+        border: 1px solid #e2f0e5;
+        border-radius: 20px;
+        padding: 28px;
+        box-shadow: 0 8px 28px rgba(0,0,0,0.04);
+        margin-top: 20px;
+    }
+
+    .tips-row {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 20px;
+    }
+
+    .tip-card {
+        flex: 1;
+        background: #f3fbf4;
+        border: 1px solid #d1fae5;
+        border-radius: 16px;
+        padding: 18px 16px;
+        display: flex;
+        gap: 14px;
+        align-items: center;
+    }
+
+    .tip-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        background: #dcfce7;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        flex-shrink: 0;
+    }
+
+    .tip-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: #15803d;
+        margin: 0 0 4px;
+    }
+
+    .tip-desc {
+        font-size: 13px;
+        color: #64748b;
+        margin: 0;
+    }
+
+    .ai-tip-box {
+        background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+        border: 1px solid #bbf7d0;
+        border-radius: 14px;
+        padding: 14px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #166534;
+        font-size: 15px;
+    }
+
+    .ai-tip-box .tip-bulb {
+        font-size: 22px;
+        flex-shrink: 0;
+    }
+
+    @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-8px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+        .classify-wrapper {
+            padding: 32px 16px 48px;
+        }
+
+        .hero-title {
+            font-size: 36px;
+        }
+
+        .two-col-row {
+            flex-direction: column !important;
+        }
+
+        .col-wrapper {
+            width: 100% !important;
+        }
+
+        .mode-options-row {
+            flex-direction: column;
+        }
+
+        .tips-row {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<div class="classify-wrapper">
+
+    <!-- ── HERO ── -->
+    <div class="hero-section">
+        <h1 class="hero-title">Phân loại <span class="green">rác thải</span></h1>
+        <p class="hero-desc">
+            Sử dụng AI để nhận diện và phân loại rác thải tự động,<br>
+            góp phần bảo vệ môi trường xanh – sạch – đẹp.
+        </p>
+    </div>
+
+    <form method="POST" action="/" enctype="multipart/form-data" id="uploadForm">
+
+        <input type="hidden" name="captured_image" id="captured_image">
+
+        <!-- ── 2 COLUMNS: Camera + Upload ── -->
+        <div class="d-flex gap-4 two-col-row" style="align-items: stretch;">
+
+            <!-- Camera Column -->
+            <div class="col-wrapper">
+                <div class="col-label">📷 Chụp ảnh trực tiếp</div>
+                <div class="feature-card">
+                    <div class="card-top">
+                        <div class="card-icon-circle">📷</div>
+                        <div class="card-title">Chụp ảnh rác thải</div>
+                        <p class="card-subtitle">Hướng camera vào rác thải và nhấn nút chụp ảnh</p>
+                    </div>
+
+                    <!-- Viewfinder (ẩn khi đã chụp) -->
+                    <div class="camera-viewfinder" id="cameraViewfinder">
+                        <video id="camera" autoplay playsinline></video>
+                    </div>
+
+                    <!-- Preview ảnh chụp (ẩn khi chưa chụp) -->
+                    <div class="img-preview-wrap" id="cameraPreviewWrap" style="display:none;">
+                        <img id="previewImg" src="" alt="Ảnh đã chụp">
+                        <button type="button" class="img-preview-close" id="clearCaptureBtn" title="Xóa ảnh">✕</button>
+                    </div>
+
+                    <div class="capture-btn-wrap">
+                        <button id="capture" type="button" class="capture-btn">📷 Chụp ảnh</button>
+                    </div>
+
+                    <canvas id="canvas" style="display:none;"></canvas>
+                </div>
+            </div>
+
+            <!-- Upload Column -->
+            <div class="col-wrapper">
+                <div class="col-label">🔵 Tải lên file ảnh</div>
+                <div class="feature-card">
+                    <div class="card-top">
+                        <div class="card-icon-circle">🖼️</div>
+                        <div class="card-title">Tải lên file ảnh</div>
+                        <p class="card-subtitle">Chọn file ảnh rác thải từ thiết bị của bạn</p>
+                    </div>
+
+                    <!-- Dropzone (ẩn khi đã chọn file) -->
+                    <div class="upload-dropzone" id="uploadDropzone">
+                        <div class="dropzone-cloud-icon">☁️</div>
+                        <div class="dropzone-title">Chọn file ảnh</div>
+                        <p class="dropzone-note">Hỗ trợ JPG, PNG, WEBP (tối đa 10MB)</p>
+                        <input type="file" name="file" id="fileInput"
+                               class="form-control upload-file-input" accept="image/*">
+                    </div>
+
+                    <!-- Preview ảnh upload (ẩn khi chưa chọn file) -->
+                    <div class="img-preview-wrap" id="uploadPreviewWrap" style="display:none;">
+                        <img id="uploadPreviewImg" src="" alt="Ảnh đã chọn">
+                        <button type="button" class="img-preview-close" id="clearUploadBtn" title="Xóa ảnh">✕</button>
+                    </div>
+
+                    <!-- Nút chọn file khác + hint (ẩn khi chưa có ảnh) -->
+                    <div id="uploadActionsWrap" style="display:none; text-align:center; margin-top:14px;">
+                        <button type="button" class="secondary-btn" id="chooseAnotherBtn">🔄 Chọn file khác</button>
+                        <p class="upload-hint">Hỗ trợ JPG, PNG, WEBP (tối đa 10MB)</p>
+                    </div>
+
+                    <!-- Input file ẩn dùng lại khi "Chọn file khác" -->
+                    <input type="file" name="file" id="fileInputHidden"
+                           class="upload-file-input" accept="image/*"
+                           style="display:none;">
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ── CHẾ ĐỘ PHÂN LOẠI ── -->
+        <div class="mode-section-card">
+            <div class="section-heading">Chế độ phân loại</div>
+            <div class="mode-options-row">
+
+                <!-- Single mode -->
+                <label class="mode-option active" for="singleMode">
+                    <input class="form-check-input" type="radio" name="mode"
+                           id="singleMode" value="single" checked>
+                    <div class="mode-option-icon">📦</div>
+                    <div class="mode-option-body">
+                        <div class="mode-option-title">Một vật thể</div>
+                        <div class="mode-option-desc">(phân loại toàn ảnh)</div>
+                    </div>
+                </label>
+
+                <!-- Multi mode -->
+                <label class="mode-option" for="multiMode">
+                    <input class="form-check-input" type="radio" name="mode"
+                           id="multiMode" value="multi">
+                    <div class="mode-option-icon">🧩</div>
+                    <div class="mode-option-body">
+                        <div class="mode-option-title">Đa vật thể</div>
+                        <div class="mode-option-desc">(vẽ khung quanh từng vật, không chia lưới cả ảnh)</div>
+                    </div>
+                </label>
+
+            </div>
+        </div>
+
+        <!-- ── NÚT PHÂN LOẠI ── -->
+        <div class="submit-btn-wrap">
+            <button type="submit" class="submit-btn" id="submitBtn">🌿 Phân loại</button>
+            <p id="uploadStatus" class="text-muted text-center mt-3 mb-0"
+               style="display:none;">Đang phân loại, vui lòng đợi...</p>
+        </div>
+
+        <!-- ── GỢI Ý CHỤP ẢNH ── -->
+        <div class="tips-section-card">
+            <div class="section-heading">Gợi ý chụp ảnh tốt nhất</div>
+
+            <div class="tips-row">
+                <div class="tip-card">
+                    <div class="tip-icon">☀️</div>
+                    <div>
+                        <p class="tip-title">Ánh sáng tốt</p>
+                        <p class="tip-desc">Chụp ở nơi có đủ ánh sáng</p>
+                    </div>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-icon">🎯</div>
+                    <div>
+                        <p class="tip-title">Rõ nét</p>
+                        <p class="tip-desc">Đảm bảo ảnh không bị mờ</p>
+                    </div>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-icon">🗑️</div>
+                    <div>
+                        <p class="tip-title">Vật thể rõ ràng</p>
+                        <p class="tip-desc">Tập trung vào rác thải</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ai-tip-box">
+                <span class="tip-bulb">💡</span>
+                <span><strong>Mẹo:</strong> Chụp rõ ràng để AI nhận diện rõ hơn</span>
+            </div>
+        </div>
+
+    </form>
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    /* ── ELEMENTS ── */
+    const video               = document.getElementById("camera");
+    const canvas              = document.getElementById("canvas");
+    const captureButton       = document.getElementById("capture");
+    const capturedImageInput  = document.getElementById("captured_image");
+    const uploadForm          = document.getElementById("uploadForm");
+    const modeInputs          = document.querySelectorAll('input[name="mode"]');
+    const modeOptions         = document.querySelectorAll('.mode-option');
+    const submitBtn           = document.getElementById("submitBtn");
+    const uploadStatus        = document.getElementById("uploadStatus");
+    const maxBytes            = 10 * 1024 * 1024;
+
+    // Camera column
+    const cameraViewfinder    = document.getElementById("cameraViewfinder");
+    const cameraPreviewWrap   = document.getElementById("cameraPreviewWrap");
+    const previewImg          = document.getElementById("previewImg");
+    const clearCaptureBtn     = document.getElementById("clearCaptureBtn");
+
+    // Upload column
+    const uploadDropzone      = document.getElementById("uploadDropzone");
+    const fileInput           = document.getElementById("fileInput");      // inside dropzone
+    const uploadPreviewWrap   = document.getElementById("uploadPreviewWrap");
+    const uploadPreviewImg    = document.getElementById("uploadPreviewImg");
+    const clearUploadBtn      = document.getElementById("clearUploadBtn");
+    const uploadActionsWrap   = document.getElementById("uploadActionsWrap");
+    const chooseAnotherBtn    = document.getElementById("chooseAnotherBtn");
+    const fileInputHidden     = document.getElementById("fileInputHidden"); // hidden, reused
+
+    /* ── MODE SYNC ── */
+    function syncModeState() {
+        modeOptions.forEach((option) => {
+            const input = option.querySelector('input[name="mode"]');
+            option.classList.toggle('active', Boolean(input && input.checked));
+        });
+    }
+    modeInputs.forEach((input) => input.addEventListener('change', syncModeState));
+    syncModeState();
+
+    /* ── CAMERA STREAM ── */
+    navigator.mediaDevices
+        .getUserMedia({ video: { width: { ideal: 1280 }, height: { ideal: 720 } } })
+        .then((stream) => { video.srcObject = stream; })
+        .catch((err) => {
+            console.error("Lỗi camera:", err);
+        });
+
+    /* ── HELPERS ── */
+    function hideConflictError() {
+        // Ẩn flash error nếu đang hiển thị (tuỳ template flash)
+        const alertEl = document.querySelector('.alert-warning, .alert-danger');
+        if (alertEl) alertEl.style.display = 'none';
+    }
+
+    function compressImage(srcCanvas, maxWidth, maxHeight, quality) {
+        const tmp = document.createElement('canvas');
+        const ctx = tmp.getContext('2d');
+        let w = srcCanvas.width, h = srcCanvas.height;
+        if (w > h) { if (w > maxWidth)  { h *= maxWidth  / w; w = maxWidth;  } }
+        else       { if (h > maxHeight) { w *= maxHeight / h; h = maxHeight; } }
+        tmp.width = w; tmp.height = h;
+        ctx.drawImage(srcCanvas, 0, 0, w, h);
+        return tmp.toDataURL("image/jpeg", quality);
+    }
+
+    /* ── CAMERA: CAPTURE ── */
+    captureButton.addEventListener("click", () => {
+        const ctx = canvas.getContext("2d");
+        canvas.width  = video.videoWidth;
+        canvas.height = video.videoHeight;
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        const compressed = compressImage(canvas, 800, 800, 0.7);
+        capturedImageInput.value = compressed;
+
+        // Show preview, hide viewfinder
+        previewImg.src = compressed;
+        cameraViewfinder.style.display  = "none";
+        cameraPreviewWrap.style.display = "block";
+
+        hideConflictError();
+    });
+
+    /* ── CAMERA: CLEAR ── */
+    clearCaptureBtn.addEventListener("click", () => {
+        capturedImageInput.value        = "";
+        previewImg.src                  = "";
+        cameraPreviewWrap.style.display = "none";
+        cameraViewfinder.style.display  = "block";
+        hideConflictError();
+    });
+
+    /* ── UPLOAD: SHOW PREVIEW after file chosen ── */
+    function handleFileChosen(file) {
+        if (!file) return;
+        if (file.size > maxBytes) {
+            alert("File quá lớn (tối đa 10MB). Chọn ảnh nhỏ hơn.");
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            uploadPreviewImg.src            = e.target.result;
+            uploadDropzone.style.display    = "none";
+            uploadPreviewWrap.style.display = "block";
+            uploadActionsWrap.style.display = "block";
+            hideConflictError();
+        };
+        reader.readAsDataURL(file);
+    }
+
+    fileInput.addEventListener("change", () => {
+        if (fileInput.files && fileInput.files[0]) {
+            handleFileChosen(fileInput.files[0]);
+        }
+    });
+
+    fileInputHidden.addEventListener("change", () => {
+        if (fileInputHidden.files && fileInputHidden.files[0]) {
+            // Copy to the real file input via DataTransfer
+            try {
+                const dt = new DataTransfer();
+                dt.items.add(fileInputHidden.files[0]);
+                fileInput.files = dt.files;
+            } catch(e) { /* Safari fallback — handled in submit */ }
+            handleFileChosen(fileInputHidden.files[0]);
+        }
+    });
+
+    /* ── UPLOAD: CLEAR ── */
+    clearUploadBtn.addEventListener("click", () => {
+        fileInput.value                 = "";
+        fileInputHidden.value           = "";
+        uploadPreviewImg.src            = "";
+        uploadPreviewWrap.style.display = "none";
+        uploadActionsWrap.style.display = "none";
+        uploadDropzone.style.display    = "flex";
+        hideConflictError();
+    });
+
+    /* ── UPLOAD: CHOOSE ANOTHER ── */
+    chooseAnotherBtn.addEventListener("click", () => {
+        fileInputHidden.click();
+    });
+
+    /* ── FORM SUBMIT ── */
+    function setUploading(busy) {
+        submitBtn.disabled = busy;
+        uploadStatus.style.display = busy ? "block" : "none";
+    }
+
+    uploadForm.addEventListener("submit", (e) => {
+        const hasCaptured = capturedImageInput.value && capturedImageInput.value.length > 0;
+        const hasFile     = (fileInput.files && fileInput.files.length > 0)
+                         || (fileInputHidden.files && fileInputHidden.files.length > 0);
+
+        // Nếu cả 2 nguồn ảnh cùng có mặt → server xử lý lỗi
+        if (hasCaptured && hasFile) {
+            setUploading(true);
+            return;
+        }
+
+        setUploading(true);
+
+        // Không có file → submit captured_image (hoặc rỗng)
+        const activeFile = (fileInput.files && fileInput.files[0])
+                        || (fileInputHidden.files && fileInputHidden.files[0]);
+        if (!activeFile) return;
+
+        e.preventDefault();
+
+        if (activeFile.size > maxBytes) {
+            setUploading(false);
+            alert("File quá lớn (tối đa 10MB). Chọn ảnh nhỏ hơn.");
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onerror = () => { setUploading(false); alert("Không đọc được file."); };
+        reader.onload = function(ev) {
+            const img = new Image();
+            img.onerror = function() {
+                capturedImageInput.value = "";
+                setUploading(true);
+                uploadForm.submit();
+            };
+            img.onload = function() {
+                try {
+                    const c = document.createElement("canvas");
+                    const ctx = c.getContext("2d");
+                    let w = img.width, h = img.height;
+                    const maxSize = 1200;
+                    if (w > h && w > maxSize) { h *= maxSize / w; w = maxSize; }
+                    else if (h > maxSize)     { w *= maxSize / h; h = maxSize; }
+                    c.width  = Math.max(1, Math.round(w));
+                    c.height = Math.max(1, Math.round(h));
+                    ctx.drawImage(img, 0, 0, c.width, c.height);
+                    capturedImageInput.value = c.toDataURL("image/jpeg", 0.82);
+                    fileInput.value          = "";
+                    fileInputHidden.value    = "";
+                    uploadForm.submit();
+                } catch(err) {
+                    console.error(err);
+                    capturedImageInput.value = "";
+                    uploadForm.submit();
+                }
+            };
+            img.src = ev.target.result;
+        };
+        reader.readAsDataURL(activeFile);
+    });
+
+});
+</script>
+
+{% endblock %}

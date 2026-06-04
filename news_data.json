@@ -1,0 +1,225 @@
+{
+  "featured_main": {
+    "id": 1,
+    "title": "50 thành phố cùng hành động để thích ứng với khí hậu nóng 50°C",
+    "summary": "UNEP kêu gọi các đô thị tăng tốc đầu tư hạ tầng xanh, giao thông sạch và quản lý chất thải để thích ứng với nắng nóng cực đoan.",
+    "date": "02/06/2026",
+    "category": "Môi trường thế giới",
+    "category_id": "world",
+    "image": "/static/uploads/ChatGPT Image 01_17_50 21 thg 5, 20266.png",
+    "views": 1240,
+    "source_url": "https://www.unep.org/news-and-stories/press-release/50-cities-climate-action-avoiding-and-adapting-50degc-world"
+  },
+  "featured_side": [
+    {
+      "id": 2,
+      "title": "Xe đạp đang có làn riêng trong các thành phố châu Phi",
+      "date": "01/06/2026",
+      "category": "Môi trường thế giới",
+      "category_id": "world",
+      "image": "/static/uploads/256de136-d5c8-41f2-8044-2f2b523100d21.png",
+      "source_url": "https://www.unep.org/news-and-stories/story/african-cities-bicycle-getting-lane-its-own"
+    },
+    {
+      "id": 3,
+      "title": "EU cảnh báo các hội nghị khí hậu đang đi chậm hơn yêu cầu của Trái Đất",
+      "date": "01/06/2026",
+      "category": "Môi trường thế giới",
+      "category_id": "world",
+      "image": "/static/uploads/256de136-d5c8-41f2-8044-2f2b523100d21.png",
+      "source_url": "https://www.reuters.com/sustainability/cop/climate-summits-are-falling-short-what-planet-needs-eu-climate-chief-says-2026-06-01/"
+    },
+    {
+      "id": 4,
+      "title": "Ngân hàng Thế giới khởi động chương trình tăng an ninh nguồn nước cho 1 tỷ người",
+      "date": "15/04/2026",
+      "category": "Chính sách - Pháp luật",
+      "category_id": "policy",
+      "image": "/static/uploads/256de136-d5c8-41f2-8044-2f2b523100d21.png",
+      "source_url": "https://www.worldbank.org/en/news/press-release/2026/04/15/world-bank-group-launches-initiative-to-improve-water-security-for-1-billion-people"
+    },
+    {
+      "id": 5,
+      "title": "Big Tech tranh luận về chuẩn hạch toán điện sạch mới",
+      "date": "26/05/2026",
+      "category": "Công nghệ xanh",
+      "category_id": "tech",
+      "image": "/static/uploads/256de136-d5c8-41f2-8044-2f2b523100d21.png",
+      "source_url": "https://www.reuters.com/sustainability/climate-energy/big-tech-splits-over-proposed-shake-up-of-clean-energy-accounting--ecmii-2026-05-26/"
+    }
+  ],
+  "articles": [
+    {
+      "id": 6,
+      "title": "Năm cách để chữa lành thiên nhiên theo UNEP",
+      "summary": "Bài viết gợi ý các hành động thiết thực để giảm rác thải, phục hồi hệ sinh thái và bảo vệ đa dạng sinh học.",
+      "date": "20/05/2026",
+      "category": "Hướng dẫn - Tips",
+      "category_id": "tips",
+      "image": "/static/uploads/256de136-d5c8-41f2-8044-2f2b523100d21.png",
+      "views": 2340,
+      "source_url": "https://www.unep.org/news-and-stories/story/here-are-five-ways-you-can-help-heal-natural-world"
+    },
+    {
+      "id": 7,
+      "title": "Cát đang trở thành tài nguyên cần được dùng tiết kiệm hơn",
+      "summary": "UN cảnh báo việc khai thác cát quá mức gây áp lực lên môi trường, hạ tầng và các hệ sinh thái ven biển.",
+      "date": "12/05/2026",
+      "category": "Môi trường thế giới",
+      "category_id": "world",
+      "image": "/static/uploads/256de136-d5c8-41f2-8044-2f2b523100d21.png",
+      "views": 642,
+      "source_url": "https://www.unep.org/news-and-stories/press-release/sand-wanted-dead-and-alive-use-it-wisely-warns-un"
+    },
+    {
+      "id": 8,
+      "title": "Ngôi đền tự làm mát có thể là tương lai của công trình bền vững",
+      "summary": "UNEP giới thiệu mô hình kiến trúc giảm tiêu thụ năng lượng và thích ứng tốt hơn với khí hậu nóng lên.",
+      "date": "19/05/2026",
+      "category": "Công nghệ xanh",
+      "category_id": "tech",
+      "image": "/static/uploads/ChatGPT Image 01_17_50 21 thg 5, 20266.png",
+      "views": 1102,
+      "source_url": "https://www.unep.org/news-and-stories/story/could-self-cooling-mosque-be-future-construction-warming-world"
+    },
+    {
+      "id": 9,
+      "title": "Thành phố ven biển tăng trưởng nhanh nhất thế giới đang đối mặt biến đổi khí hậu",
+      "summary": "Các đô thị ven biển cần tăng cường quy hoạch xanh, chống ngập và quản lý rác thải để giảm thiệt hại dài hạn.",
+      "date": "15/05/2026",
+      "category": "Môi trường thế giới",
+      "category_id": "world",
+      "image": "/static/uploads/256de136-d5c8-41f2-8044-2f2b523100d21.png",
+      "views": 923,
+      "source_url": "https://www.unep.org/news-and-stories/story/worlds-fastest-growing-coastal-city-bracing-itself-climate-change"
+    },
+    {
+      "id": 10,
+      "title": "UNEP: 8 cách đơn giản để hành động vì khí hậu ngay hôm nay",
+      "summary": "Danh sách gợi ý những thay đổi nhỏ trong sinh hoạt để giảm phát thải và lượng chất thải hàng ngày.",
+      "date": "08/05/2026",
+      "category": "Hướng dẫn - Tips",
+      "category_id": "tips",
+      "image": "/static/uploads/256de136-d5c8-41f2-8044-2f2b523100d21.png",
+      "views": 478,
+      "source_url": "https://www.unep.org/news-and-stories/story/here-are-eight-simple-ways-you-can-fight-climate-change-today"
+    },
+    {
+      "id": 11,
+      "title": "Đại hội đồng LHQ ủng hộ ý kiến mang tính bước ngoặt về khí hậu",
+      "summary": "Một phán quyết quan trọng được nhắc tới như cơ sở chính sách cho hành động khí hậu và môi trường trong thời gian tới.",
+      "date": "26/05/2026",
+      "category": "Nghiên cứu - Báo cáo",
+      "category_id": "research",
+      "image": "/static/uploads/256de136-d5c8-41f2-8044-2f2b523100d21.png",
+      "views": 923,
+      "source_url": "https://www.unep.org/news-and-stories/story/un-general-assembly-recently-backed-landmark-court-opinion-climate-change"
+    },
+    {
+      "id": 12,
+      "title": "Serbia sẽ đăng cai Ngày Môi trường Thế giới 2027",
+      "summary": "UNEP công bố địa điểm đăng cai, đồng thời nhấn mạnh vai trò của các thành phố trong giảm rác thải và ô nhiễm.",
+      "date": "29/05/2026",
+      "category": "Tin tức thế giới",
+      "category_id": "world",
+      "image": "/static/uploads/256de136-d5c8-41f2-8044-2f2b523100d21.png",
+      "views": 760,
+      "source_url": "https://www.unep.org/news-and-stories/press-release/republic-serbia-host-world-environment-day-2027"
+    },
+    {
+      "id": 13,
+      "title": "Ca sĩ Alok được UNEP bổ nhiệm làm Đại sứ Thiện chí Toàn cầu",
+      "summary": "Chiến dịch truyền thông môi trường nhằm lan tỏa thông điệp sống xanh, giảm rác thải và chống ô nhiễm nhựa.",
+      "date": "01/06/2026",
+      "category": "Tin tức thế giới",
+      "category_id": "world",
+      "image": "/static/uploads/256de136-d5c8-41f2-8044-2f2b523100d21.png",
+      "views": 501,
+      "source_url": "https://www.unep.org/news-and-stories/press-release/grammy-nominated-brazilian-musician-alok-named-unep-global-goodwill"
+    },
+    {
+      "id": 14,
+      "title": "Ngân hàng Thế giới mở rộng bảo lãnh để thúc đẩy đầu tư xanh tại châu Phi",
+      "summary": "Nguồn vốn mới được kỳ vọng hỗ trợ các dự án hạ tầng, năng lượng sạch và kinh tế tuần hoàn tại khu vực.",
+      "date": "19/05/2026",
+      "category": "Chính sách - Pháp luật",
+      "category_id": "policy",
+      "image": "/static/uploads/ChatGPT Image 01_17_50 21 thg 5, 20266.png",
+      "views": 815,
+      "source_url": "https://www.worldbank.org/en/news/press-release/2026/05/19/world-bank-group-to-double-guarantees-for-africa-to-catalyze-investment-create-jobs"
+    },
+    {
+      "id": 15,
+      "title": "Ngân hàng Thế giới công bố sáng kiến về chuỗi cung ứng khoáng sản then chốt",
+      "summary": "Báo cáo nhấn mạnh nhu cầu khai thác, tái chế và sử dụng tài nguyên bền vững hơn cho chuyển dịch xanh.",
+      "date": "17/04/2026",
+      "category": "Nghiên cứu - Báo cáo",
+      "category_id": "research",
+      "image": "/static/uploads/ChatGPT Image 01_17_50 21 thg 5, 20266.png",
+      "views": 602,
+      "source_url": "https://www.worldbank.org/en/news/statement/2026/04/17/mdbs-powering-critical-minerals-value-chains"
+    },
+    {
+      "id": 16,
+      "title": "EU thúc đẩy lộ trình thay thế thử nghiệm động vật trong an toàn hóa chất",
+      "summary": "Ủy ban châu Âu đưa ra lộ trình giúp quản lý hóa chất hiệu quả hơn và giảm tác động môi trường.",
+      "date": "01/06/2026",
+      "category": "Chính sách - Pháp luật",
+      "category_id": "policy",
+      "image": "/static/uploads/256de136-d5c8-41f2-8044-2f2b523100d21.png",
+      "views": 910,
+      "source_url": "https://ec.europa.eu/commission/presscorner/detail/en/ip_26_1214"
+    },
+    {
+      "id": 17,
+      "title": "EU xem xét cơ chế mới cho dịch vụ vệ tinh nhằm tăng khả năng chống chịu",
+      "summary": "Quyết định này liên quan đến hạ tầng số, năng lượng và khả năng vận hành bền vững của các thành phố thông minh.",
+      "date": "27/05/2026",
+      "category": "Công nghệ xanh",
+      "category_id": "tech",
+      "image": "/static/uploads/256de136-d5c8-41f2-8044-2f2b523100d21.png",
+      "views": 430,
+      "source_url": "https://ec.europa.eu/commission/presscorner/detail/en/ip_26_1170"
+    },
+    {
+      "id": 18,
+      "title": "Trung tâm dữ liệu có đang đẩy chi phí lưới điện sang người dùng?",
+      "summary": "Reuters phân tích ảnh hưởng của hạ tầng số đến năng lượng, phát thải và áp lực môi trường đô thị.",
+      "date": "12/05/2026",
+      "category": "Công nghệ xanh",
+      "category_id": "tech",
+      "image": "/static/uploads/ChatGPT Image 01_17_50 21 thg 5, 20266.png",
+      "views": 1305,
+      "source_url": "https://www.reuters.com/sustainability/are-data-centers-pushing-grid-costs-onto-consumers-2026-05-12/"
+    },
+    {
+      "id": 19,
+      "title": "Equinix đối mặt phản ứng về các trung tâm dữ liệu tại Cape Town",
+      "summary": "Bài viết đề cập đến lo ngại môi trường và năng lượng khi mở rộng hạ tầng dữ liệu ở đô thị lớn.",
+      "date": "18/05/2026",
+      "category": "Công nghệ xanh",
+      "category_id": "tech",
+      "image": "/static/uploads/ChatGPT Image 01_17_50 21 thg 5, 20266.png",
+      "views": 721,
+      "source_url": "https://www.reuters.com/business/energy/equinix-faces-challenge-cape-town-data-centres-over-environmental-concerns-2026-05-18/"
+    },
+    {
+      "id": 20,
+      "title": "Bài toán tái thiết nông nghiệp trước biến động khí hậu toàn cầu",
+      "summary": "Reuters đặt câu hỏi về tương lai của sản xuất lương thực khi khí hậu thay đổi, áp lực đất đai và tài nguyên tăng lên.",
+      "date": "01/06/2026",
+      "category": "Môi trường thế giới",
+      "category_id": "world",
+      "image": "/static/uploads/256de136-d5c8-41f2-8044-2f2b523100d21.png",
+      "views": 889,
+      "source_url": "https://www.reuters.com/sustainability/land-use-biodiversity/analysis-could-hormuz-be-crisis-that-finally-makes-world-rethink-farming--ecmii-2026-06-01/"
+    }
+  ],
+  "trending": [
+    "phân loại rác tại nguồn",
+    "tái chế rác thải nhựa",
+    "rác thải sinh hoạt",
+    "xử lý rác thải công nghiệp",
+    "môi trường xanh"
+  ]
+}

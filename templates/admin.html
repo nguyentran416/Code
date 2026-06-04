@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Trị Người Dùng</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="E:\Specialized Project\Project\Waste-Classification-Web-main\static\style.css">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center text-primary fw-bold">Quản Trị Người Dùng</h1>
+
+        <!-- Danh sách người dùng -->
+        <div class="card mt-4 shadow-sm">
+            <div class="card-header bg-primary text-white text-center">Danh Sách Người Dùng</div>
+            <div class="card-body">
+                <table class="table table-hover text-center">
+                    <thead class="bg-primary text-white">
+                        <tr>
+                            <th>Username</th>
+                            <th>Points</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.points }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Thông tin khách hàng -->
+        <div class="card mt-4 shadow-sm">
+            <div class="card-header bg-warning text-dark text-center">Thông Tin Khách Hàng</div>
+            <div class="card-body">
+                <table class="table table-hover text-center">
+                    <thead class="bg-warning text-dark">
+                        <tr>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Số Điện Thoại</th>
+                            <th>Địa Chỉ</th>
+                            <th>Thao Tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for customer in customer_data %}
+                        <tr>
+                            <td>{{ customer.user.username }}</td>
+                            <td>
+                                <input type="email"
+                                       name="email"
+                                       form="customer-form-{{ customer.id }}"
+                                       value="{{ customer.email or '' }}"
+                                       class="form-control">
+                            </td>
+                            <td>
+                                <input type="text"
+                                       name="phone"
+                                       form="customer-form-{{ customer.id }}"
+                                       value="{{ customer.phone or '' }}"
+                                       class="form-control">
+                            </td>
+                            <td>
+                                <input type="text"
+                                       name="address"
+                                       form="customer-form-{{ customer.id }}"
+                                       value="{{ customer.address or '' }}"
+                                       class="form-control">
+                            </td>
+                            <td>
+                                <form id="customer-form-{{ customer.id }}"
+                                      method="POST"
+                                      action="{{ url_for('update_customer', id=customer.id) }}">
+                                    <button type="submit" class="btn btn-success">
+                                        Lưu
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-muted">Chưa có tài khoản nào.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Thống kê các loại rác thải đã được nhận dạng -->
+        <div class="card mt-4 shadow-sm">
+            <div class="card-header bg-success text-white text-center">
+                <h5 class="mb-0">Thống Kê Các Loại Rác Thải Đã Nhận Dạng</h5>
+            </div>
+            <div class="card-body">
+                {% if waste_stats %}
+                {% set total = waste_stats|sum(attribute='count') %}
+                <div class="table-responsive">
+                    <table class="table table-hover text-center align-middle">
+                        <thead class="table-success">
+                            <tr>
+                                <th>Loại Rác</th>
+                                <th>Tên Tiếng Anh</th>
+                                <th>Số Lượng</th>
+                                <th>Tỷ Lệ (%)</th>
+                                <th>Thanh Tiến Trình</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in waste_stats %}
+                            {% set percent = (item.count / total * 100) if total > 0 else 0 %}
+                            <tr>
+                                <td><strong>{{ item.waste_type_vn }}</strong></td>
+                                <td>{{ item.waste_type }}</td>
+                                <td>{{ item.count }}</td>
+                                <td>{{ "%.1f"|format(percent) }}%</td>
+                                <td>
+                                    <div class="progress" style="height: 28px;">
+                                        <div class="progress-bar
+                                            {% if item.waste_type in ['cardboard', 'paper'] %} bg-info
+                                            {% elif item.waste_type in ['metal', 'glass'] %} bg-warning text-dark
+                                            {% elif 'plastic' in item.waste_type %} bg-primary
+                                            {% elif item.waste_type in ['biological', 'trash', 'shoes', 'clothes', 'battery'] %} bg-danger text-white
+                                            {% else %} bg-secondary
+                                            {% endif %}" role="progressbar"
+                                            aria-valuenow="{{ percent }}" aria-valuemin="0" aria-valuemax="100">
+                                            {{ "%.1f"|format(percent) }}%
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot class="table-light">
+                            <tr>
+                                <th colspan="2">Tổng cộng</th>
+                                <th>{{ total }}</th>
+                                <th>100%</th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info text-center" role="alert">
+                    Chưa có dữ liệu nhận dạng rác nào.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Nút quay lại -->
+        <div class="text-center mt-4">
+            <a href="/" class="btn btn-primary btn-lg shadow">Quay lại Trang chủ</a>
+        </div>
+    </div>
+</body>
+
+</html>
