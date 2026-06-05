@@ -2,6 +2,7 @@
 {% block title %}{% if article %}Chỉnh sửa bài viết{% else %}Thêm bài viết{% endif %}{% endblock %}
 
 {% block page_styles %}
+<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/42.0.0/ckeditor5.css" />
 <style>
     .article-form-wrap { max-width: 1100px; }
     .article-panel {
@@ -34,6 +35,11 @@
     .ck-content .text-center  { text-align: center !important; }
     .ck-content .text-right   { text-align: right !important; }
     .ck-content .text-justify { text-align: justify !important; }
+    
+    /* Thiết lập chiều cao cho trình soạn thảo */
+    .ck-editor__editable {
+        min-height: 400px;
+    }
 </style>
 {% endblock %}
 
@@ -73,7 +79,6 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Nội dung <span style="color:#dc2626">*</span></label>
-                        <!-- KHÔNG có required: CKEditor ẩn textarea này -->
                         <textarea name="content" id="content" class="form-control" rows="14">{{ article.content if article else '' }}</textarea>
                     </div>
                 </div>
@@ -123,13 +128,70 @@
     </div>
 </div>
 
-<!-- CKEditor 5 Classic build từ CDN (có sẵn Alignment plugin) -->
-<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+<script type="importmap">
+    {
+        "imports": {
+            "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/42.0.0/ckeditor5.js"
+        }
+    }
+</script>
+
+<script type="module">
+    import {
+        ClassicEditor,
+        Heading,
+        Underline,
+        Strikethrough,
+        List,
+        Link,
+        Table,
+        MediaEmbed,
+        Essentials,
+        Paragraph,
+        Bold,
+        Italic,
+        Alignment,
+        BlockQuote
+    } from 'ckeditor5';
+
+    var contentArea = document.getElementById('content');
+
+    ClassicEditor
+        .create(contentArea, {
+            plugins: [
+                Essentials, Paragraph, Bold, Italic, Heading,
+                Underline, Strikethrough, List, Link, Table, MediaEmbed,
+                Alignment, BlockQuote
+            ],
+            toolbar: {
+                items: [
+                    'heading', '|',
+                    'bold', 'italic', 'underline', 'strikethrough', '|',
+                    'alignment', '|',
+                    'bulletedList', 'numberedList', 'outdent', 'indent', '|',
+                    'link', 'blockQuote', 'insertTable', 'mediaEmbed', '|',
+                    'undo', 'redo'
+                ],
+                shouldNotGroupWhenFull: true
+            },
+            alignment: {
+                options: ['left', 'center', 'right', 'justify']
+            },
+            licenseKey: 'GPL'
+        })
+        .then(function (editor) {
+            window.editorInstance = editor;
+            console.log('CKEditor 5 Classic (v42.0.0) load thành công với Alignment plugin!');
+        })
+        .catch(function (err) {
+            console.error('Lỗi khi tải CKEditor:', err);
+        });
+</script>
+
 <script>
-    var editorInstance = null;
-    var form           = document.getElementById('articleForm');
-    var contentArea    = document.getElementById('content');
-    var errorMsgEl     = document.getElementById('formErrorMsg');
+    var form        = document.getElementById('articleForm');
+    var contentArea = document.getElementById('content');
+    var errorMsgEl  = document.getElementById('formErrorMsg');
 
     function showFormError(msg) {
         errorMsgEl.textContent = msg;
@@ -137,44 +199,11 @@
         window.scrollTo({ top: errorMsgEl.offsetTop - 20, behavior: 'smooth' });
     }
 
-    if (typeof ClassicEditor !== 'undefined') {
-        ClassicEditor
-            .create(contentArea, {
-                toolbar: {
-                    items: [
-                        'heading', '|',
-                        'bold', 'italic', 'underline', 'strikethrough', '|',
-                        'alignment', '|',
-                        'bulletedList', 'numberedList', 'outdent', 'indent', '|',
-                        'link', 'blockQuote', 'insertTable', 'mediaEmbed', '|',
-                        'undo', 'redo'
-                    ],
-                    shouldNotGroupWhenFull: true
-                },
-                alignment: {
-                    options: ['left', 'center', 'right', 'justify']
-                },
-                table: {
-                    contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
-                },
-                licenseKey: 'GPL'
-            })
-            .then(function (editor) {
-                editorInstance = editor;
-                console.log('CKEditor OK — toolbar alignment sẵn sàng');
-            })
-            .catch(function (err) {
-                console.error('CKEditor lỗi:', err);
-            });
-    } else {
-        console.warn('CKEditor chưa load — dùng textarea thường.');
-    }
-
     form.addEventListener('submit', function (e) {
         errorMsgEl.style.display = 'none';
 
-        if (editorInstance) {
-            var ckData = editorInstance.getData();
+        if (window.editorInstance) {
+            var ckData = window.editorInstance.getData();
             contentArea.value = ckData;
             if (!ckData || ckData.trim() === '') {
                 e.preventDefault();
