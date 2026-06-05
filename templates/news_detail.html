@@ -16,11 +16,20 @@
         box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
         overflow: hidden;
     }
+    .news-detail-hero {
+        overflow: hidden;
+        cursor: zoom-in;
+    }
     .news-detail-hero img {
         width: 100%;
         height: 420px;
         object-fit: cover;
         display: block;
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease;
+    }
+    .news-detail-hero:hover img {
+        transform: scale(1.03);
+        filter: brightness(0.96);
     }
     .news-detail-body {
         padding: 28px;
@@ -55,6 +64,63 @@
         max-width: 100%;
         border-radius: 16px;
         margin: 16px 0;
+        cursor: zoom-in;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        display: block;
+    }
+    .news-detail-content img:hover {
+        transform: scale(1.025);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.18);
+    }
+    /* Style căn lề từ CKEditor */
+    .news-detail-content .text-left    { text-align: left !important; }
+    .news-detail-content .text-center  { text-align: center !important; }
+    .news-detail-content .text-right   { text-align: right !important; }
+    .news-detail-content .text-justify { text-align: justify !important; }
+    /* Lightbox */
+    #lb-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.88);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        cursor: zoom-out;
+    }
+    #lb-overlay.active { display: flex; }
+    #lb-img {
+        max-width: 90vw;
+        max-height: 90vh;
+        object-fit: contain;
+        border-radius: 10px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        cursor: default;
+        animation: lbFadeIn 0.22s ease;
+    }
+    #lb-close {
+        position: fixed;
+        top: 18px;
+        right: 22px;
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.15);
+        border: none;
+        color: #fff;
+        font-size: 22px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s;
+        z-index: 10000;
+    }
+    #lb-close:hover { background: rgba(255,255,255,0.28); }
+    @keyframes lbFadeIn {
+        from { opacity: 0; transform: scale(0.93); }
+        to   { opacity: 1; transform: scale(1); }
     }
     .news-related {
         margin-top: 28px;
@@ -78,14 +144,25 @@
         text-decoration: none;
         color: inherit;
         transition: 0.18s;
+        overflow: hidden;
     }
     .related-card:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06); }
-    .related-card img {
+    .related-img-wrap {
         width: 100%;
         height: 120px;
-        object-fit: cover;
         border-radius: 12px;
         margin-bottom: 10px;
+        overflow: hidden;
+    }
+    .related-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+        display: block;
+    }
+    .related-card:hover img {
+        transform: scale(1.05);
     }
     .related-card h4 {
         font-size: 15px;
@@ -146,7 +223,9 @@
         <div class="related-grid">
             {% for related in related_articles %}
             <a href="{{ url_for('news_detail', slug=related.slug) }}" class="related-card">
-                <img src="{{ related.image }}" alt="{{ related.title }}">
+                <div class="related-img-wrap">
+                    <img src="{{ related.image }}" alt="{{ related.title }}">
+                </div>
                 <h4>{{ related.title }}</h4>
                 <div class="meta-row" style="font-size:12px; margin-bottom:0;">
                     <span><i class="fas fa-calendar"></i>{{ related.date }}</span>
@@ -157,4 +236,64 @@
     </div>
     {% endif %}
 </div>
+
+<!-- Lightbox overlay -->
+<div id="lb-overlay" role="dialog" aria-modal="true" aria-label="Xem ảnh toàn màn hình">
+    <button id="lb-close" title="Đóng (ESC)">&times;</button>
+    <img id="lb-img" src="" alt="">
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+    var overlay = document.getElementById('lb-overlay');
+    var lbImg   = document.getElementById('lb-img');
+    var btnClose = document.getElementById('lb-close');
+
+    function openLightbox(src, alt) {
+        lbImg.src = src;
+        lbImg.alt = alt || '';
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+        lbImg.src = '';
+    }
+
+    // Gắn sự kiện click cho ảnh đại diện (hero) và các ảnh trong bài
+    var heroImg = document.querySelector('.news-detail-hero img');
+    if (heroImg) {
+        heroImg.addEventListener('click', function () {
+            openLightbox(heroImg.src, heroImg.alt);
+        });
+    }
+
+    document.querySelectorAll('.news-detail-content img').forEach(function (img) {
+        img.addEventListener('click', function () {
+            openLightbox(img.src, img.alt);
+        });
+    });
+
+    // Đóng bằng nút ×
+    btnClose.addEventListener('click', closeLightbox);
+
+    // Click ra ngoài ảnh → đóng
+    overlay.addEventListener('click', function (e) {
+        if (e.target === overlay) closeLightbox();
+    });
+
+    // Ngăn click lên ảnh truyền ra overlay
+    lbImg.addEventListener('click', function (e) { e.stopPropagation(); });
+
+    // ESC → đóng
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeLightbox();
+    });
+}());
+</script>
 {% endblock %}

@@ -3,9 +3,7 @@
 
 {% block page_styles %}
 <style>
-    .article-form-wrap {
-        max-width: 1100px;
-    }
+    .article-form-wrap { max-width: 1100px; }
     .article-panel {
         background: #fff;
         border-radius: 24px;
@@ -31,6 +29,11 @@
         margin-bottom: 16px;
         font-weight: 600;
     }
+    /* Đảm bảo style căn lề từ CKEditor hiển thị đúng */
+    .ck-content .text-left    { text-align: left !important; }
+    .ck-content .text-center  { text-align: center !important; }
+    .ck-content .text-right   { text-align: right !important; }
+    .ck-content .text-justify { text-align: justify !important; }
 </style>
 {% endblock %}
 
@@ -70,7 +73,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Nội dung <span style="color:#dc2626">*</span></label>
-                        <!-- KHÔNG có required: CKEditor ẩn textarea này, trình duyệt sẽ block submit nếu có required -->
+                        <!-- KHÔNG có required: CKEditor ẩn textarea này -->
                         <textarea name="content" id="content" class="form-control" rows="14">{{ article.content if article else '' }}</textarea>
                     </div>
                 </div>
@@ -120,12 +123,13 @@
     </div>
 </div>
 
+<!-- CKEditor 5 Classic build từ CDN (có sẵn Alignment plugin) -->
 <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
 <script>
     var editorInstance = null;
-    var form = document.getElementById('articleForm');
-    var contentTextarea = document.getElementById('content');
-    var errorMsgEl = document.getElementById('formErrorMsg');
+    var form           = document.getElementById('articleForm');
+    var contentArea    = document.getElementById('content');
+    var errorMsgEl     = document.getElementById('formErrorMsg');
 
     function showFormError(msg) {
         errorMsgEl.textContent = msg;
@@ -133,45 +137,58 @@
         window.scrollTo({ top: errorMsgEl.offsetTop - 20, behavior: 'smooth' });
     }
 
-    // Khởi tạo CKEditor nếu load được
     if (typeof ClassicEditor !== 'undefined') {
         ClassicEditor
-            .create(contentTextarea)
-            .then(function(editor) {
-                editorInstance = editor;
-                console.log('CKEditor OK');
+            .create(contentArea, {
+                toolbar: {
+                    items: [
+                        'heading', '|',
+                        'bold', 'italic', 'underline', 'strikethrough', '|',
+                        'alignment', '|',
+                        'bulletedList', 'numberedList', 'outdent', 'indent', '|',
+                        'link', 'blockQuote', 'insertTable', 'mediaEmbed', '|',
+                        'undo', 'redo'
+                    ],
+                    shouldNotGroupWhenFull: true
+                },
+                alignment: {
+                    options: ['left', 'center', 'right', 'justify']
+                },
+                table: {
+                    contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
+                },
+                licenseKey: 'GPL'
             })
-            .catch(function(err) {
+            .then(function (editor) {
+                editorInstance = editor;
+                console.log('CKEditor OK — toolbar alignment sẵn sàng');
+            })
+            .catch(function (err) {
                 console.error('CKEditor lỗi:', err);
             });
     } else {
-        console.warn('CKEditor script chưa load, dùng textarea thường.');
+        console.warn('CKEditor chưa load — dùng textarea thường.');
     }
 
-    // Submit handler
-    form.addEventListener('submit', function(e) {
+    form.addEventListener('submit', function (e) {
         errorMsgEl.style.display = 'none';
 
         if (editorInstance) {
-            // CKEditor đang chạy: lấy nội dung và đưa vào textarea
             var ckData = editorInstance.getData();
-            contentTextarea.value = ckData;
-
+            contentArea.value = ckData;
             if (!ckData || ckData.trim() === '') {
                 e.preventDefault();
                 showFormError('Vui lòng nhập nội dung bài viết!');
                 return;
             }
         } else {
-            // Textarea thường
-            if (!contentTextarea.value || contentTextarea.value.trim() === '') {
+            if (!contentArea.value || contentArea.value.trim() === '') {
                 e.preventDefault();
                 showFormError('Vui lòng nhập nội dung bài viết!');
                 return;
             }
         }
 
-        // Disable nút để tránh double submit
         var btn = document.getElementById('submitBtn');
         btn.disabled = true;
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang lưu...';

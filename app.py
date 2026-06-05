@@ -2316,7 +2316,7 @@ def delete_article_image_file(image_path):
 def admin_articles():
     user, denied = require_admin()
     if denied: return denied
-    articles = Article.query.order_by(Article.created_at.desc()).all()
+    articles = Article.query.order_by(Article.id.asc()).all()
     rows = [article_to_dict(article, include_content=False) for article in articles]
     return render_template('admin_articles.html', user=user, is_admin=True, active_page='articles', articles=rows)
 
