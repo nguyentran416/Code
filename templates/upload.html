@@ -18,11 +18,10 @@
     /* ── HERO ── */
     .hero-section {
         display: flex;
-        flex-direction: column;
         align-items: center;
         justify-content: center;
+        gap: 24px;
         margin-bottom: 32px;
-        text-align: center;
     }
 
     .hero-icon {
@@ -35,7 +34,6 @@
         justify-content: center;
         box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
         flex-shrink: 0;
-        margin-bottom: 20px;
     }
 
     .hero-icon i {
@@ -46,15 +44,15 @@
     .hero-title-wrapper {
         display: flex;
         flex-direction: column;
-        align-items: center;
+        align-items: flex-start;
+        text-align: left;
     }
 
     .hero-title {
         font-size: 3.2rem;
         font-weight: 800;
         line-height: 1.15;
-        margin-bottom: 12px;
-        margin: 0;
+        margin: 0 0 20px 0;
     }
 
     .hero-title .dark {
@@ -65,12 +63,20 @@
         color: #16a34a;
     }
 
-    .hero-divider {
-        width: 64px;
+    .border-green {
+        position: relative;
+        display: inline-block;
+    }
+
+    .border-green::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -8px;
+        width: 40px;
         height: 5px;
         background: #16a34a;
-        border-radius: 20px;
-        margin: 16px auto 16px;
+        border-radius: 10px;
     }
 
     .hero-desc {
@@ -78,7 +84,8 @@
         font-size: 1.05rem;
         line-height: 1.75;
         margin: 0;
-        max-width: 420px;
+        text-align: center;
+        width: 100%;
     }
 
     /* ── COLUMN LABELS ── */
@@ -94,7 +101,7 @@
         font-weight: 700;
         font-size: 15px;
         color: #16a34a;
-        box-shadow: 0 2px 10px rgba(22,163,74,0.07);
+        box-shadow: 0 2px 10px rgba(22, 163, 74, 0.07);
         margin-bottom: 14px;
         width: 100%;
         box-sizing: border-box;
@@ -113,7 +120,7 @@
         border: 1px solid #e2f0e5;
         border-radius: 20px;
         padding: 28px 24px;
-        box-shadow: 0 8px 28px rgba(0,0,0,0.05);
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.05);
         flex: 1;
         display: flex;
         flex-direction: column;
@@ -134,7 +141,7 @@
         justify-content: center;
         font-size: 30px;
         margin: 0 auto 14px;
-        box-shadow: 0 4px 14px rgba(22,163,74,0.12);
+        box-shadow: 0 4px 14px rgba(22, 163, 74, 0.12);
     }
 
     .card-title {
@@ -158,7 +165,7 @@
         background: #030303;
         border-radius: 14px;
         overflow: hidden;
-        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
         position: relative;
     }
 
@@ -184,13 +191,13 @@
         font-weight: 700;
         font-size: 15px;
         transition: transform 0.2s ease, box-shadow 0.2s ease;
-        box-shadow: 0 4px 14px rgba(22,163,74,0.35);
+        box-shadow: 0 4px 14px rgba(22, 163, 74, 0.35);
         cursor: pointer;
     }
 
     .capture-btn:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(22,163,74,0.45);
+        box-shadow: 0 6px 20px rgba(22, 163, 74, 0.45);
     }
 
     /* ── PREVIEW (shared) ── */
@@ -201,7 +208,7 @@
         min-height: 260px;
         border-radius: 14px;
         overflow: hidden;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
         background: #000;
     }
 
@@ -228,7 +235,7 @@
         font-size: 16px;
         font-weight: 700;
         color: #374151;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.20);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.20);
         transition: background 0.15s, transform 0.15s;
         z-index: 10;
         line-height: 1;
@@ -320,7 +327,7 @@
         border: 1px solid #e2f0e5;
         border-radius: 20px;
         padding: 24px 28px;
-        box-shadow: 0 8px 28px rgba(0,0,0,0.04);
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.04);
         margin-top: 20px;
     }
 
@@ -412,12 +419,12 @@
         text-align: center;
         cursor: pointer;
         transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s;
-        box-shadow: 0 6px 20px rgba(22,163,74,0.38);
+        box-shadow: 0 6px 20px rgba(22, 163, 74, 0.38);
     }
 
     .submit-btn:hover:not(:disabled) {
         transform: translateY(-2px);
-        box-shadow: 0 8px 28px rgba(22,163,74,0.46);
+        box-shadow: 0 8px 28px rgba(22, 163, 74, 0.46);
     }
 
     .submit-btn:disabled {
@@ -431,7 +438,7 @@
         border: 1px solid #e2f0e5;
         border-radius: 20px;
         padding: 28px;
-        box-shadow: 0 8px 28px rgba(0,0,0,0.04);
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.04);
         margin-top: 20px;
     }
 
@@ -495,8 +502,15 @@
     }
 
     @keyframes slideDown {
-        from { opacity: 0; transform: translateY(-8px); }
-        to   { opacity: 1; transform: translateY(0); }
+        from {
+            opacity: 0;
+            transform: translateY(-8px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     /* ── RESPONSIVE ── */
@@ -505,8 +519,20 @@
             padding: 32px 16px 48px;
         }
 
+        .hero-section {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 16px;
+        }
+
+        .hero-title-wrapper {
+            align-items: center;
+            text-align: center;
+        }
+
         .hero-title {
-            font-size: 36px;
+            font-size: 2.4rem;
         }
 
         .two-col-row {
@@ -536,10 +562,9 @@
         </div>
         <div class="hero-title-wrapper">
             <h1 class="hero-title">
-                <span class="dark">Phân loại</span>
+                <span class="dark border-green">Phân</span><span class="dark"> loại</span>
                 <span class="green"> rác thải</span>
             </h1>
-            <div class="hero-divider"></div>
             <p class="hero-desc">
                 Sử dụng AI để nhận diện và phân loại rác thải tự động,<br>
                 góp phần bảo vệ môi trường xanh – sạch – đẹp.
@@ -598,8 +623,8 @@
                         <div class="dropzone-cloud-icon">☁️</div>
                         <div class="dropzone-title">Chọn file ảnh</div>
                         <p class="dropzone-note">Hỗ trợ JPG, PNG, WEBP (tối đa 10MB)</p>
-                        <input type="file" name="file" id="fileInput"
-                               class="form-control upload-file-input" accept="image/*">
+                        <input type="file" name="file" id="fileInput" class="form-control upload-file-input"
+                            accept="image/*">
                     </div>
 
                     <!-- Preview ảnh upload (ẩn khi chưa chọn file) -->
@@ -615,9 +640,8 @@
                     </div>
 
                     <!-- Input file ẩn dùng lại khi "Chọn file khác" -->
-                    <input type="file" name="file" id="fileInputHidden"
-                           class="upload-file-input" accept="image/*"
-                           style="display:none;">
+                    <input type="file" name="file" id="fileInputHidden" class="upload-file-input" accept="image/*"
+                        style="display:none;">
                 </div>
             </div>
 
@@ -630,8 +654,7 @@
 
                 <!-- Single mode -->
                 <label class="mode-option active" for="singleMode">
-                    <input class="form-check-input" type="radio" name="mode"
-                           id="singleMode" value="single" checked>
+                    <input class="form-check-input" type="radio" name="mode" id="singleMode" value="single" checked>
                     <div class="mode-option-icon">📦</div>
                     <div class="mode-option-body">
                         <div class="mode-option-title">Một vật thể</div>
@@ -641,8 +664,7 @@
 
                 <!-- Multi mode -->
                 <label class="mode-option" for="multiMode">
-                    <input class="form-check-input" type="radio" name="mode"
-                           id="multiMode" value="multi">
+                    <input class="form-check-input" type="radio" name="mode" id="multiMode" value="multi">
                     <div class="mode-option-icon">🧩</div>
                     <div class="mode-option-body">
                         <div class="mode-option-title">Đa vật thể</div>
@@ -656,8 +678,8 @@
         <!-- ── NÚT PHÂN LOẠI ── -->
         <div class="submit-btn-wrap">
             <button type="submit" class="submit-btn" id="submitBtn">🌿 Phân loại</button>
-            <p id="uploadStatus" class="text-muted text-center mt-3 mb-0"
-               style="display:none;">Đang phân loại, vui lòng đợi...</p>
+            <p id="uploadStatus" class="text-muted text-center mt-3 mb-0" style="display:none;">Đang phân loại, vui lòng
+                đợi...</p>
         </div>
 
         <!-- ── GỢI Ý CHỤP ẢNH ── -->
@@ -699,219 +721,219 @@
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", () => {
 
-    /* ── ELEMENTS ── */
-    const video               = document.getElementById("camera");
-    const canvas              = document.getElementById("canvas");
-    const captureButton       = document.getElementById("capture");
-    const capturedImageInput  = document.getElementById("captured_image");
-    const uploadForm          = document.getElementById("uploadForm");
-    const modeInputs          = document.querySelectorAll('input[name="mode"]');
-    const modeOptions         = document.querySelectorAll('.mode-option');
-    const submitBtn           = document.getElementById("submitBtn");
-    const uploadStatus        = document.getElementById("uploadStatus");
-    const maxBytes            = 10 * 1024 * 1024;
+        /* ── ELEMENTS ── */
+        const video = document.getElementById("camera");
+        const canvas = document.getElementById("canvas");
+        const captureButton = document.getElementById("capture");
+        const capturedImageInput = document.getElementById("captured_image");
+        const uploadForm = document.getElementById("uploadForm");
+        const modeInputs = document.querySelectorAll('input[name="mode"]');
+        const modeOptions = document.querySelectorAll('.mode-option');
+        const submitBtn = document.getElementById("submitBtn");
+        const uploadStatus = document.getElementById("uploadStatus");
+        const maxBytes = 10 * 1024 * 1024;
 
-    // Camera column
-    const cameraViewfinder    = document.getElementById("cameraViewfinder");
-    const cameraPreviewWrap   = document.getElementById("cameraPreviewWrap");
-    const previewImg          = document.getElementById("previewImg");
-    const clearCaptureBtn     = document.getElementById("clearCaptureBtn");
+        // Camera column
+        const cameraViewfinder = document.getElementById("cameraViewfinder");
+        const cameraPreviewWrap = document.getElementById("cameraPreviewWrap");
+        const previewImg = document.getElementById("previewImg");
+        const clearCaptureBtn = document.getElementById("clearCaptureBtn");
 
-    // Upload column
-    const uploadDropzone      = document.getElementById("uploadDropzone");
-    const fileInput           = document.getElementById("fileInput");      // inside dropzone
-    const uploadPreviewWrap   = document.getElementById("uploadPreviewWrap");
-    const uploadPreviewImg    = document.getElementById("uploadPreviewImg");
-    const clearUploadBtn      = document.getElementById("clearUploadBtn");
-    const uploadActionsWrap   = document.getElementById("uploadActionsWrap");
-    const chooseAnotherBtn    = document.getElementById("chooseAnotherBtn");
-    const fileInputHidden     = document.getElementById("fileInputHidden"); // hidden, reused
+        // Upload column
+        const uploadDropzone = document.getElementById("uploadDropzone");
+        const fileInput = document.getElementById("fileInput");      // inside dropzone
+        const uploadPreviewWrap = document.getElementById("uploadPreviewWrap");
+        const uploadPreviewImg = document.getElementById("uploadPreviewImg");
+        const clearUploadBtn = document.getElementById("clearUploadBtn");
+        const uploadActionsWrap = document.getElementById("uploadActionsWrap");
+        const chooseAnotherBtn = document.getElementById("chooseAnotherBtn");
+        const fileInputHidden = document.getElementById("fileInputHidden"); // hidden, reused
 
-    /* ── MODE SYNC ── */
-    function syncModeState() {
-        modeOptions.forEach((option) => {
-            const input = option.querySelector('input[name="mode"]');
-            option.classList.toggle('active', Boolean(input && input.checked));
-        });
-    }
-    modeInputs.forEach((input) => input.addEventListener('change', syncModeState));
-    syncModeState();
-
-    /* ── CAMERA STREAM ── */
-    navigator.mediaDevices
-        .getUserMedia({ video: { width: { ideal: 1280 }, height: { ideal: 720 } } })
-        .then((stream) => { video.srcObject = stream; })
-        .catch((err) => {
-            console.error("Lỗi camera:", err);
-        });
-
-    /* ── HELPERS ── */
-    function hideConflictError() {
-        // Ẩn flash error nếu đang hiển thị (tuỳ template flash)
-        const alertEl = document.querySelector('.alert-warning, .alert-danger');
-        if (alertEl) alertEl.style.display = 'none';
-    }
-
-    function compressImage(srcCanvas, maxWidth, maxHeight, quality) {
-        const tmp = document.createElement('canvas');
-        const ctx = tmp.getContext('2d');
-        let w = srcCanvas.width, h = srcCanvas.height;
-        if (w > h) { if (w > maxWidth)  { h *= maxWidth  / w; w = maxWidth;  } }
-        else       { if (h > maxHeight) { w *= maxHeight / h; h = maxHeight; } }
-        tmp.width = w; tmp.height = h;
-        ctx.drawImage(srcCanvas, 0, 0, w, h);
-        return tmp.toDataURL("image/jpeg", quality);
-    }
-
-    /* ── CAMERA: CAPTURE ── */
-    captureButton.addEventListener("click", () => {
-        const ctx = canvas.getContext("2d");
-        canvas.width  = video.videoWidth;
-        canvas.height = video.videoHeight;
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-        const compressed = compressImage(canvas, 800, 800, 0.7);
-        capturedImageInput.value = compressed;
-
-        // Show preview, hide viewfinder
-        previewImg.src = compressed;
-        cameraViewfinder.style.display  = "none";
-        cameraPreviewWrap.style.display = "block";
-
-        hideConflictError();
-    });
-
-    /* ── CAMERA: CLEAR ── */
-    clearCaptureBtn.addEventListener("click", () => {
-        capturedImageInput.value        = "";
-        previewImg.src                  = "";
-        cameraPreviewWrap.style.display = "none";
-        cameraViewfinder.style.display  = "block";
-        hideConflictError();
-    });
-
-    /* ── UPLOAD: SHOW PREVIEW after file chosen ── */
-    function handleFileChosen(file) {
-        if (!file) return;
-        if (file.size > maxBytes) {
-            alert("File quá lớn (tối đa 10MB). Chọn ảnh nhỏ hơn.");
-            return;
+        /* ── MODE SYNC ── */
+        function syncModeState() {
+            modeOptions.forEach((option) => {
+                const input = option.querySelector('input[name="mode"]');
+                option.classList.toggle('active', Boolean(input && input.checked));
+            });
         }
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            uploadPreviewImg.src            = e.target.result;
-            uploadDropzone.style.display    = "none";
-            uploadPreviewWrap.style.display = "block";
-            uploadActionsWrap.style.display = "block";
+        modeInputs.forEach((input) => input.addEventListener('change', syncModeState));
+        syncModeState();
+
+        /* ── CAMERA STREAM ── */
+        navigator.mediaDevices
+            .getUserMedia({ video: { width: { ideal: 1280 }, height: { ideal: 720 } } })
+            .then((stream) => { video.srcObject = stream; })
+            .catch((err) => {
+                console.error("Lỗi camera:", err);
+            });
+
+        /* ── HELPERS ── */
+        function hideConflictError() {
+            // Ẩn flash error nếu đang hiển thị (tuỳ template flash)
+            const alertEl = document.querySelector('.alert-warning, .alert-danger');
+            if (alertEl) alertEl.style.display = 'none';
+        }
+
+        function compressImage(srcCanvas, maxWidth, maxHeight, quality) {
+            const tmp = document.createElement('canvas');
+            const ctx = tmp.getContext('2d');
+            let w = srcCanvas.width, h = srcCanvas.height;
+            if (w > h) { if (w > maxWidth) { h *= maxWidth / w; w = maxWidth; } }
+            else { if (h > maxHeight) { w *= maxHeight / h; h = maxHeight; } }
+            tmp.width = w; tmp.height = h;
+            ctx.drawImage(srcCanvas, 0, 0, w, h);
+            return tmp.toDataURL("image/jpeg", quality);
+        }
+
+        /* ── CAMERA: CAPTURE ── */
+        captureButton.addEventListener("click", () => {
+            const ctx = canvas.getContext("2d");
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            const compressed = compressImage(canvas, 800, 800, 0.7);
+            capturedImageInput.value = compressed;
+
+            // Show preview, hide viewfinder
+            previewImg.src = compressed;
+            cameraViewfinder.style.display = "none";
+            cameraPreviewWrap.style.display = "block";
+
             hideConflictError();
-        };
-        reader.readAsDataURL(file);
-    }
+        });
 
-    fileInput.addEventListener("change", () => {
-        if (fileInput.files && fileInput.files[0]) {
-            handleFileChosen(fileInput.files[0]);
-        }
-    });
+        /* ── CAMERA: CLEAR ── */
+        clearCaptureBtn.addEventListener("click", () => {
+            capturedImageInput.value = "";
+            previewImg.src = "";
+            cameraPreviewWrap.style.display = "none";
+            cameraViewfinder.style.display = "block";
+            hideConflictError();
+        });
 
-    fileInputHidden.addEventListener("change", () => {
-        if (fileInputHidden.files && fileInputHidden.files[0]) {
-            // Copy to the real file input via DataTransfer
-            try {
-                const dt = new DataTransfer();
-                dt.items.add(fileInputHidden.files[0]);
-                fileInput.files = dt.files;
-            } catch(e) { /* Safari fallback — handled in submit */ }
-            handleFileChosen(fileInputHidden.files[0]);
-        }
-    });
-
-    /* ── UPLOAD: CLEAR ── */
-    clearUploadBtn.addEventListener("click", () => {
-        fileInput.value                 = "";
-        fileInputHidden.value           = "";
-        uploadPreviewImg.src            = "";
-        uploadPreviewWrap.style.display = "none";
-        uploadActionsWrap.style.display = "none";
-        uploadDropzone.style.display    = "flex";
-        hideConflictError();
-    });
-
-    /* ── UPLOAD: CHOOSE ANOTHER ── */
-    chooseAnotherBtn.addEventListener("click", () => {
-        fileInputHidden.click();
-    });
-
-    /* ── FORM SUBMIT ── */
-    function setUploading(busy) {
-        submitBtn.disabled = busy;
-        uploadStatus.style.display = busy ? "block" : "none";
-    }
-
-    uploadForm.addEventListener("submit", (e) => {
-        const hasCaptured = capturedImageInput.value && capturedImageInput.value.length > 0;
-        const hasFile     = (fileInput.files && fileInput.files.length > 0)
-                         || (fileInputHidden.files && fileInputHidden.files.length > 0);
-
-        // Nếu cả 2 nguồn ảnh cùng có mặt → server xử lý lỗi
-        if (hasCaptured && hasFile) {
-            setUploading(true);
-            return;
-        }
-
-        setUploading(true);
-
-        // Không có file → submit captured_image (hoặc rỗng)
-        const activeFile = (fileInput.files && fileInput.files[0])
-                        || (fileInputHidden.files && fileInputHidden.files[0]);
-        if (!activeFile) return;
-
-        e.preventDefault();
-
-        if (activeFile.size > maxBytes) {
-            setUploading(false);
-            alert("File quá lớn (tối đa 10MB). Chọn ảnh nhỏ hơn.");
-            return;
-        }
-
-        const reader = new FileReader();
-        reader.onerror = () => { setUploading(false); alert("Không đọc được file."); };
-        reader.onload = function(ev) {
-            const img = new Image();
-            img.onerror = function() {
-                capturedImageInput.value = "";
-                setUploading(true);
-                uploadForm.submit();
+        /* ── UPLOAD: SHOW PREVIEW after file chosen ── */
+        function handleFileChosen(file) {
+            if (!file) return;
+            if (file.size > maxBytes) {
+                alert("File quá lớn (tối đa 10MB). Chọn ảnh nhỏ hơn.");
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                uploadPreviewImg.src = e.target.result;
+                uploadDropzone.style.display = "none";
+                uploadPreviewWrap.style.display = "block";
+                uploadActionsWrap.style.display = "block";
+                hideConflictError();
             };
-            img.onload = function() {
+            reader.readAsDataURL(file);
+        }
+
+        fileInput.addEventListener("change", () => {
+            if (fileInput.files && fileInput.files[0]) {
+                handleFileChosen(fileInput.files[0]);
+            }
+        });
+
+        fileInputHidden.addEventListener("change", () => {
+            if (fileInputHidden.files && fileInputHidden.files[0]) {
+                // Copy to the real file input via DataTransfer
                 try {
-                    const c = document.createElement("canvas");
-                    const ctx = c.getContext("2d");
-                    let w = img.width, h = img.height;
-                    const maxSize = 1200;
-                    if (w > h && w > maxSize) { h *= maxSize / w; w = maxSize; }
-                    else if (h > maxSize)     { w *= maxSize / h; h = maxSize; }
-                    c.width  = Math.max(1, Math.round(w));
-                    c.height = Math.max(1, Math.round(h));
-                    ctx.drawImage(img, 0, 0, c.width, c.height);
-                    capturedImageInput.value = c.toDataURL("image/jpeg", 0.82);
-                    fileInput.value          = "";
-                    fileInputHidden.value    = "";
-                    uploadForm.submit();
-                } catch(err) {
-                    console.error(err);
-                    capturedImageInput.value = "";
-                    uploadForm.submit();
-                }
-            };
-            img.src = ev.target.result;
-        };
-        reader.readAsDataURL(activeFile);
-    });
+                    const dt = new DataTransfer();
+                    dt.items.add(fileInputHidden.files[0]);
+                    fileInput.files = dt.files;
+                } catch (e) { /* Safari fallback — handled in submit */ }
+                handleFileChosen(fileInputHidden.files[0]);
+            }
+        });
 
-});
+        /* ── UPLOAD: CLEAR ── */
+        clearUploadBtn.addEventListener("click", () => {
+            fileInput.value = "";
+            fileInputHidden.value = "";
+            uploadPreviewImg.src = "";
+            uploadPreviewWrap.style.display = "none";
+            uploadActionsWrap.style.display = "none";
+            uploadDropzone.style.display = "flex";
+            hideConflictError();
+        });
+
+        /* ── UPLOAD: CHOOSE ANOTHER ── */
+        chooseAnotherBtn.addEventListener("click", () => {
+            fileInputHidden.click();
+        });
+
+        /* ── FORM SUBMIT ── */
+        function setUploading(busy) {
+            submitBtn.disabled = busy;
+            uploadStatus.style.display = busy ? "block" : "none";
+        }
+
+        uploadForm.addEventListener("submit", (e) => {
+            const hasCaptured = capturedImageInput.value && capturedImageInput.value.length > 0;
+            const hasFile = (fileInput.files && fileInput.files.length > 0)
+                || (fileInputHidden.files && fileInputHidden.files.length > 0);
+
+            // Nếu cả 2 nguồn ảnh cùng có mặt → server xử lý lỗi
+            if (hasCaptured && hasFile) {
+                setUploading(true);
+                return;
+            }
+
+            setUploading(true);
+
+            // Không có file → submit captured_image (hoặc rỗng)
+            const activeFile = (fileInput.files && fileInput.files[0])
+                || (fileInputHidden.files && fileInputHidden.files[0]);
+            if (!activeFile) return;
+
+            e.preventDefault();
+
+            if (activeFile.size > maxBytes) {
+                setUploading(false);
+                alert("File quá lớn (tối đa 10MB). Chọn ảnh nhỏ hơn.");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onerror = () => { setUploading(false); alert("Không đọc được file."); };
+            reader.onload = function (ev) {
+                const img = new Image();
+                img.onerror = function () {
+                    capturedImageInput.value = "";
+                    setUploading(true);
+                    uploadForm.submit();
+                };
+                img.onload = function () {
+                    try {
+                        const c = document.createElement("canvas");
+                        const ctx = c.getContext("2d");
+                        let w = img.width, h = img.height;
+                        const maxSize = 1200;
+                        if (w > h && w > maxSize) { h *= maxSize / w; w = maxSize; }
+                        else if (h > maxSize) { w *= maxSize / h; h = maxSize; }
+                        c.width = Math.max(1, Math.round(w));
+                        c.height = Math.max(1, Math.round(h));
+                        ctx.drawImage(img, 0, 0, c.width, c.height);
+                        capturedImageInput.value = c.toDataURL("image/jpeg", 0.82);
+                        fileInput.value = "";
+                        fileInputHidden.value = "";
+                        uploadForm.submit();
+                    } catch (err) {
+                        console.error(err);
+                        capturedImageInput.value = "";
+                        uploadForm.submit();
+                    }
+                };
+                img.src = ev.target.result;
+            };
+            reader.readAsDataURL(activeFile);
+        });
+
+    });
 </script>
 
 {% endblock %}
