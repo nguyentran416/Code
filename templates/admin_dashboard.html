@@ -203,9 +203,11 @@
         justify-content: center;
         flex-shrink: 0;
     }
-    .activity-icon.blue { background: #dbeafe; color: #2563eb; }
-    .activity-icon.gray { background: #f1f5f9; color: #64748b; }
-    .activity-icon.neutral { background: #ecfdf3; color: #16a34a; }
+    .activity-icon.blue   { background: #dbeafe; color: #2563eb; }
+    .activity-icon.green  { background: #dcfce7; color: #16a34a; }
+    .activity-icon.gray   { background: #f1f5f9; color: #64748b; }
+    .activity-icon.neutral{ background: #ecfdf3; color: #16a34a; }
+    .activity-icon.purple { background: #ede9fe; color: #7c3aed; }
     .activity-text {
         font-size: 14px;
         color: #334155;
@@ -228,28 +230,22 @@
     .activity-feed-scroll {
         flex: 1;
         min-height: 0;
-        max-height: 248px;
-        overflow-y: hidden;
-        overflow-x: hidden;
-        padding-right: 2px;
-        margin-right: -2px;
-    }
-    .activity-feed-scroll:hover {
+        max-height: 440px;
         overflow-y: auto;
+        overflow-x: hidden;
+        padding-right: 4px;
+        margin-right: -4px;
         scrollbar-width: thin;
-        scrollbar-color: #cbd5e1 transparent;
+        scrollbar-color: #e2e8f0 transparent;
     }
-    .activity-feed-scroll:focus {
-        outline: none;
+    .activity-feed-scroll::-webkit-scrollbar {
+        width: 4px;
     }
-    .activity-feed-scroll:hover::-webkit-scrollbar {
-        width: 6px;
-    }
-    .activity-feed-scroll:hover::-webkit-scrollbar-thumb {
+    .activity-feed-scroll::-webkit-scrollbar-thumb {
         background: #cbd5e1;
         border-radius: 999px;
     }
-    .activity-feed-scroll:hover::-webkit-scrollbar-track {
+    .activity-feed-scroll::-webkit-scrollbar-track {
         background: transparent;
     }
     @media (max-width: 1200px) {

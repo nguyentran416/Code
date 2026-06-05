@@ -1,11 +1,7 @@
 {% extends "admin_base.html" %}
 {% block title %}Quản lý bài viết{% endblock %}
 
-{% block admin_content %}
-
-<!-- Toast notification container -->
-<div id="toastContainer" style="position:fixed;top:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:10px;"></div>
-
+{% block page_styles %}
 <style>
 .toast-notif {
     display: flex;
@@ -42,6 +38,12 @@
     to   { opacity: 1; transform: translateX(0); }
 }
 </style>
+{% endblock %}
+
+{% block admin_content %}
+
+<!-- Toast notification container -->
+<div id="toastContainer" style="position:fixed;top:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:10px;"></div>
 
 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
     <div>
@@ -54,35 +56,7 @@
 </div>
 
 {% with messages = get_flashed_messages(with_categories=true) %}
-{% if messages %}
-<script>
-(function() {
-    var messages = [
-        {% for category, message in messages %}
-        { category: "{{ category }}", message: "{{ message }}" }{% if not loop.last %},{% endif %}
-        {% endfor %}
-    ];
-    var icons = { success: 'fa-circle-check', danger: 'fa-circle-xmark', warning: 'fa-triangle-exclamation', info: 'fa-circle-info' };
-    var container = document.getElementById('toastContainer');
-    messages.forEach(function(m) {
-        var cat = m.category === 'warning' ? 'warning' : m.category;
-        var icon = icons[cat] || 'fa-circle-info';
-        var el = document.createElement('div');
-        el.className = 'toast-notif ' + cat;
-        el.innerHTML =
-            '<i class="fas ' + icon + ' toast-icon"></i>' +
-            '<span>' + m.message + '</span>' +
-            '<button class="toast-close" onclick="this.parentElement.remove()">&times;</button>';
-        container.appendChild(el);
-        setTimeout(function() {
-            el.style.opacity = '0';
-            el.style.transform = 'translateX(60px)';
-            setTimeout(function() { el.remove(); }, 400);
-        }, 4000);
-    });
-})();
-</script>
-{% endif %}
+<div id="flashData" data-messages="{{ messages | tojson }}" style="display:none;"></div>
 {% endwith %}
 
 <div class="card shadow-sm border-0" style="border-radius:20px; overflow:hidden;">
@@ -139,4 +113,39 @@
         </div>
     </div>
 </div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+    var raw = document.getElementById('flashData');
+    if (!raw) return;
+    var flashMessages = JSON.parse(raw.dataset.messages || '[]');
+    var icons = {
+        success: 'fa-circle-check',
+        danger:  'fa-circle-xmark',
+        warning: 'fa-triangle-exclamation',
+        info:    'fa-circle-info'
+    };
+    var container = document.getElementById('toastContainer');
+    flashMessages.forEach(function (item) {
+        var cat  = Array.isArray(item) ? item[0] : item.category;
+        var msg  = Array.isArray(item) ? item[1] : item.message;
+        var icon = icons[cat] || 'fa-circle-info';
+        var el   = document.createElement('div');
+        el.className = 'toast-notif ' + cat;
+        el.innerHTML =
+            '<i class="fas ' + icon + ' toast-icon"></i>' +
+            '<span>' + msg + '</span>' +
+            '<button class="toast-close" onclick="this.parentElement.remove()">&times;</button>';
+        container.appendChild(el);
+        setTimeout(function () {
+            el.style.opacity   = '0';
+            el.style.transform = 'translateX(60px)';
+            setTimeout(function () { el.remove(); }, 400);
+        }, 4000);
+    });
+}());
+</script>
 {% endblock %}

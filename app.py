@@ -379,8 +379,17 @@ def article_image_relative_path(filename):
 
 
 def save_article_image_from_upload(file_storage):
-    filename = safe_upload_filename(file_storage.filename, prefix='news')
+    # Luôn tạo tên file mới từ timestamp để tránh tên file dài từ nguồn ngoài
+    # (ảnh từ Google Drive, cloud, v.v. có thể có tên >200 ký tự)
+    ext = '.jpg'
+    original = file_storage.filename or ''
+    if '.' in original:
+        raw_ext = original.rsplit('.', 1)[-1].lower()[:8]
+        if raw_ext in ('jpg', 'jpeg', 'png', 'webp', 'gif', 'bmp'):
+            ext = '.' + ('jpg' if raw_ext == 'jpeg' else raw_ext)
+    filename = f"news_{datetime.now().strftime('%Y%m%d%H%M%S%f')}{ext}"
     temp_path = os.path.join(NEWS_UPLOAD_FOLDER, filename)
+    os.makedirs(NEWS_UPLOAD_FOLDER, exist_ok=True)
     file_storage.save(temp_path)
     return article_image_relative_path(filename)
 
@@ -1104,14 +1113,19 @@ def ensure_model_ready():
 
 
 def safe_upload_filename(original_name, prefix='upload'):
-    name = secure_filename(original_name or '') or ''
-    if name and name not in ('.', '..'):
-        return name
     ext = '.jpg'
     if original_name and '.' in original_name:
         raw_ext = original_name.rsplit('.', 1)[-1].lower()[:8]
         if raw_ext in ('jpg', 'jpeg', 'png', 'webp', 'gif', 'bmp'):
             ext = '.' + ('jpg' if raw_ext == 'jpeg' else raw_ext)
+    name = secure_filename(original_name or '') or ''
+    # Giới hạn tên file tối đa 80 ký tự (tránh lỗi MAX_PATH trên Windows)
+    if name and name not in ('.', '..'):
+        stem = name[:80] if len(name) > 80 else name
+        # Đảm bảo phần extension đúng sau khi cắt
+        if '.' in stem:
+            stem = stem.rsplit('.', 1)[0]
+        return f"{stem[:60]}{ext}"
     return f"{prefix}_{datetime.now().strftime('%Y%m%d%H%M%S%f')}{ext}"
 
 
@@ -1791,6 +1805,8 @@ def register():
         new_user = User(username=username, password=hashed_password)
         db.session.add(new_user); db.session.commit()
         db.session.add(CustomerData(user_id=new_user.id, email=email, phone=phone, address=address))
+        # Ghi log đăng ký
+        db.session.add(UserActivity(user_id=new_user.id, action='Đăng ký tài khoản'))
         db.session.commit()
         flash("Registration successful!", "success"); return redirect('/login')
     return render_template('register.html')
@@ -1806,7 +1822,10 @@ def login():
         if not user or not check_password_hash(user.password, password):
             flash("Invalid username or password!", "danger")
             return redirect('/login')
-            
+        
+        # Ghi log đăng nhập
+        db.session.add(UserActivity(user_id=user.id, action='Đăng nhập'))
+        db.session.commit()
         session['user_id'] = user.id
         return redirect(admin_home_url() if is_admin_user(user) else '/home')
     return render_template('login.html')
@@ -2447,6 +2466,25 @@ def count_classified_objects_on_date(day):
     return sum(len(expand_activity_to_waste_types(a.action)) for a in activities)
 
 
+def format_time_ago(dt):
+    """Định dạng thời gian tương đối tiếng Việt."""
+    if not dt:
+        return '—'
+    now = datetime.utcnow()
+    delta = now - dt
+    total_seconds = int(delta.total_seconds())
+    if total_seconds < 60:
+        return 'Vừa xong'
+    if total_seconds < 3600:
+        return f'{total_seconds // 60} phút trước'
+    if total_seconds < 86400:
+        return f'{total_seconds // 3600} giờ trước'
+    if total_seconds < 172800:  # < 2 ngày
+        local_dt = dt + timedelta(hours=7)  # UTC+7
+        return f'Hôm qua lúc {local_dt.strftime("%H:%M")}'
+    return f'{delta.days} ngày trước'
+
+
 def get_admin_dashboard_context(user):
     waste_stats, total_objects = get_waste_stats()
     model_accuracy = get_model_validation_accuracy()
@@ -2457,22 +2495,31 @@ def get_admin_dashboard_context(user):
         day = datetime.utcnow().date() - timedelta(days=i)
         chart_labels.append(day.strftime('%d/%m'))
         chart_values.append(count_classified_objects_on_date(day))
+
+    # Bảng ánh xạ loại hoạt động → icon, tone, message
+    ACTIVITY_MAP = {
+        'Đăng nhập':        ('fa-right-to-bracket', 'blue',   'đã đăng nhập'),
+        'Đăng ký tài khoản':('fa-user-plus',        'green',  'vừa đăng ký tài khoản'),
+        'Logged out':       ('fa-right-from-bracket','gray',   'đã đăng xuất'),
+    }
+
     recent_rows = []
-    for activity in (UserActivity.query.order_by(UserActivity.timestamp.desc()).limit(20).all()):
-        actor     = db.session.get(User, activity.user_id)
-        username  = actor.username if actor else 'Hệ thống'
-        delta     = datetime.utcnow() - activity.timestamp
-        time_ago  = (f'{delta.days} ngày trước' if delta.days > 0
-                     else f'{delta.seconds//3600} giờ trước' if delta.seconds >= 3600
-                     else f'{delta.seconds//60} phút trước' if delta.seconds >= 60
-                     else 'Vừa xong')
-        icon, tone, message = 'fa-clock', 'neutral', activity.action
-        if activity.action.startswith('Phân loại'):
-            icon, tone = 'fa-image', 'blue'
-            message = f'Người dùng <strong>{username}</strong> đã phân loại ảnh'
-        elif 'Logged' in activity.action:
-            icon, tone = 'fa-right-from-bracket', 'gray'
-            message = f'Người dùng <strong>{username}</strong> đã đăng xuất'
+    for activity in (UserActivity.query.order_by(UserActivity.timestamp.desc()).limit(30).all()):
+        actor    = db.session.get(User, activity.user_id)
+        uname    = actor.username if actor else 'Hệ thống'
+        time_ago = format_time_ago(activity.timestamp)
+
+        action = activity.action
+        if action in ACTIVITY_MAP:
+            icon, tone, verb = ACTIVITY_MAP[action]
+            message = f'Người dùng <strong>{uname}</strong> {verb}'
+        elif action.startswith('Phân loại'):
+            icon, tone = 'fa-image', 'purple'
+            message = f'Người dùng <strong>{uname}</strong> đã phân loại ảnh'
+        else:
+            icon, tone = 'fa-clock', 'neutral'
+            message = action
+
         recent_rows.append({'icon': icon, 'tone': tone, 'message': message, 'time_ago': time_ago})
     return {
         'user': user, 'is_admin': True, 'active_page': 'dashboard',
