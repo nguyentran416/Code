@@ -242,4 +242,3 @@ plt.show()
 #python Model.py
 #python app.py
 #venv\Scripts\activate
-   

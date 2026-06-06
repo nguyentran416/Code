@@ -1856,7 +1856,7 @@ def get_model_display_name():
     base = os.path.basename(app.config.get('MODEL_PATH', '')).lower()
     if 'yolo'      in base: return 'YOLOv8'
     if 'mobilenet' in base: return 'MobileNetV2'
-    return 'AI Model'
+    return 'MobileNetV2'
 
 
 def expand_activity_to_waste_types(action):
@@ -2014,6 +2014,16 @@ def history():
     user = get_current_user()
     if not user:
         flash("Please log in to view activity history!", "warning"); return redirect('/login')
+    
+    # Fetch additional user details (email and phone) from CustomerData
+    customer_info = CustomerData.query.filter_by(user_id=user.id).first()
+    if customer_info:
+        user.email = customer_info.email
+        user.phone = customer_info.phone
+    else:
+        user.email = None
+        user.phone = None
+
     activities       = UserActivity.query.filter_by(user_id=user.id).order_by(UserActivity.timestamp.desc()).all()
     is_admin         = is_admin_user(user)
     classification_count = sum(
@@ -2318,7 +2328,40 @@ def admin_articles():
     if denied: return denied
     articles = Article.query.order_by(Article.id.asc()).all()
     rows = [article_to_dict(article, include_content=False) for article in articles]
-    return render_template('admin_articles.html', user=user, is_admin=True, active_page='articles', articles=rows)
+    
+    # Calculate stats for dashboard
+    total_articles = len(rows)
+    
+    category_data = db.session.query(
+        Article.category,
+        func.count(Article.id)
+    ).group_by(Article.category).order_by(func.count(Article.id).desc()).all()
+    
+    colors = ['#16a34a', '#2563eb', '#7c3aed', '#ea580c', '#db2777', '#06b6d4', '#eab308']
+    categories_list = []
+    for i, (cat_name, count) in enumerate(category_data):
+        color = colors[i % len(colors)]
+        categories_list.append({
+            'name': cat_name or 'Chưa phân loại',
+            'count': count,
+            'color': color
+        })
+        
+    most_viewed = Article.query.order_by(Article.views.desc()).first()
+    most_viewed_title = most_viewed.title if most_viewed else "Không có bài viết"
+    most_viewed_views = most_viewed.views if most_viewed else 0
+    
+    total_authors = db.session.query(func.count(func.distinct(Article.author))).scalar() or 0
+    
+    article_stats = {
+        'total_articles': total_articles,
+        'categories': categories_list,
+        'most_viewed_title': most_viewed_title,
+        'most_viewed_views': most_viewed_views,
+        'total_authors': total_authors
+    }
+    
+    return render_template('admin_articles.html', user=user, is_admin=True, active_page='articles', articles=rows, article_stats=article_stats)
 
 
 @app.route('/admin/articles/new', methods=['GET', 'POST'])

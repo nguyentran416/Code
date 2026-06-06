@@ -8,17 +8,20 @@
     max-width: 1400px;
     margin: 0 auto;
   }
+
   .news-layout {
     display: grid;
     grid-template-columns: 260px 1fr;
     gap: 28px;
     align-items: start;
   }
+
   .news-sidebar {
     display: flex;
     flex-direction: column;
     gap: 20px;
   }
+
   .sidebar-panel {
     background: #fff;
     border: 1px solid #e2efe2;
@@ -26,12 +29,14 @@
     padding: 20px;
     box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
   }
+
   .sidebar-panel h4 {
     font-size: 16px;
     font-weight: 700;
     margin-bottom: 14px;
     color: #0f172a;
   }
+
   .cat-link {
     display: flex;
     align-items: center;
@@ -45,17 +50,27 @@
     margin-bottom: 6px;
     transition: 0.18s;
   }
+
   .cat-link i {
     margin-right: 10px;
     color: #64748b;
     width: 18px;
   }
-  .cat-link:hover { background: #f0fdf4; color: #15803d; }
+
+  .cat-link:hover {
+    background: #f0fdf4;
+    color: #15803d;
+  }
+
   .cat-link.active {
     background: #ecfdf3;
     color: #15803d;
   }
-  .cat-link.active i { color: #16a34a; }
+
+  .cat-link.active i {
+    color: #16a34a;
+  }
+
   .cat-badge {
     background: #e2e8f0;
     color: #475569;
@@ -64,10 +79,12 @@
     padding: 2px 9px;
     border-radius: 999px;
   }
+
   .cat-link.active .cat-badge {
     background: #16a34a;
     color: #fff;
   }
+
   .fact-box {
     background: linear-gradient(180deg, #f0fdf4 0%, #ecfdf5 100%);
     border: 1px solid #bbf7d0;
@@ -76,15 +93,18 @@
     flex-direction: column;
     gap: 0;
   }
+
   .fact-box h4 {
     margin-bottom: 10px;
   }
+
   .fact-body p {
     font-size: 13px;
     color: #475569;
     line-height: 1.6;
     margin-bottom: 12px;
   }
+
   .btn-fact {
     display: inline-block;
     background: #16a34a;
@@ -96,38 +116,45 @@
     text-decoration: none;
     margin-bottom: 0;
   }
+
   .btn-fact:hover {
     background: #15803d;
     color: #fff;
   }
+
   .news-img {
     object-fit: cover;
     background: #ecfdf5;
     display: block;
   }
+
   .featured-main-img img.news-img {
     width: 100%;
     height: 100%;
     min-height: 240px;
   }
+
   .featured-side-item .news-img {
     width: 100px;
     height: 72px;
     border-radius: 10px;
     flex-shrink: 0;
   }
+
   .article-card .news-img {
     width: 200px;
     height: 130px;
     border-radius: 12px;
     flex-shrink: 0;
   }
+
   .news-header {
     display: flex;
     align-items: flex-start;
     gap: 20px;
     margin-bottom: 32px;
   }
+
   .news-icon {
     width: 88px;
     height: 88px;
@@ -139,14 +166,12 @@
     box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
     flex-shrink: 0;
   }
-  .news-icon i {
-    font-size: 48px;
-    color: #16a34a;
-  }
+
   .news-title-wrapper {
     display: flex;
     flex-direction: column;
   }
+
   .news-main-title {
     font-size: 3.2rem;
     font-weight: 800;
@@ -154,12 +179,15 @@
     margin-bottom: 12px;
     margin: 0;
   }
+
   .news-main-title .dark {
     color: #0f172a;
   }
+
   .news-main-title .green {
     color: #16a34a;
   }
+
   .news-title-divider {
     width: 64px;
     height: 5px;
@@ -167,17 +195,20 @@
     border-radius: 20px;
     margin-bottom: 16px;
   }
+
   .news-main-sub {
     color: #64748b;
     font-size: 15px;
     margin-bottom: 24px;
   }
+
   .featured-grid {
     display: grid;
     grid-template-columns: 1.35fr 1fr;
     gap: 20px;
     margin-bottom: 28px;
   }
+
   .featured-main {
     background: #fff;
     border-radius: 18px;
@@ -189,17 +220,23 @@
     display: block;
     transition: 0.2s;
   }
-  .featured-main:hover { transform: translateY(-3px); }
+
+  .featured-main:hover {
+    transform: translateY(-3px);
+  }
+
   .featured-main-img {
     position: relative;
     height: 280px;
     overflow: hidden;
   }
+
   .featured-main-img img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
+
   .badge-hot {
     position: absolute;
     top: 16px;
@@ -211,7 +248,11 @@
     padding: 6px 12px;
     border-radius: 8px;
   }
-  .featured-main-body { padding: 22px; }
+
+  .featured-main-body {
+    padding: 22px;
+  }
+
   .featured-main-body h2 {
     font-size: 22px;
     font-weight: 800;
@@ -219,12 +260,14 @@
     margin-bottom: 10px;
     color: #0f172a;
   }
+
   .featured-main-body p {
     color: #64748b;
     font-size: 14px;
     line-height: 1.65;
     margin-bottom: 14px;
   }
+
   .meta-row {
     display: flex;
     flex-wrap: wrap;
@@ -233,18 +276,25 @@
     color: #64748b;
     align-items: center;
   }
-  .meta-row i { color: #16a34a; margin-right: 4px; }
+
+  .meta-row i {
+    color: #16a34a;
+    margin-right: 4px;
+  }
+
   .read-more {
     color: #16a34a;
     font-weight: 700;
     text-decoration: none;
     margin-left: auto;
   }
+
   .featured-side-list {
     display: flex;
     flex-direction: column;
     gap: 14px;
   }
+
   .featured-side-item {
     display: flex;
     gap: 14px;
@@ -256,7 +306,11 @@
     color: inherit;
     transition: 0.18s;
   }
-  .featured-side-item:hover { background: #f8fdf9; }
+
+  .featured-side-item:hover {
+    background: #f8fdf9;
+  }
+
   .featured-side-item h3 {
     font-size: 14px;
     font-weight: 700;
@@ -264,6 +318,7 @@
     margin-bottom: 6px;
     color: #0f172a;
   }
+
   .latest-header {
     display: flex;
     flex-wrap: wrap;
@@ -272,16 +327,19 @@
     gap: 14px;
     margin-bottom: 18px;
   }
+
   .latest-header h3 {
     font-size: 20px;
     font-weight: 800;
     margin: 0;
   }
+
   .filter-tabs {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
   }
+
   .filter-tab {
     padding: 8px 16px;
     border-radius: 999px;
@@ -292,16 +350,19 @@
     font-weight: 600;
     text-decoration: none;
   }
+
   .filter-tab.active {
     background: #16a34a;
     border-color: #16a34a;
     color: #fff;
   }
+
   .search-row {
     display: flex;
     gap: 10px;
     align-items: center;
   }
+
   .search-input {
     border: 1px solid #d4e8d4;
     border-radius: 12px;
@@ -309,6 +370,7 @@
     font-size: 14px;
     min-width: 220px;
   }
+
   .btn-filter {
     border: 1px solid #d4e8d4;
     background: #fff;
@@ -318,13 +380,20 @@
     color: #475569;
     cursor: pointer;
   }
+
   .latest-grid {
     display: grid;
     grid-template-columns: 1fr 260px;
     gap: 22px;
     align-items: start;
   }
-  .article-list { display: flex; flex-direction: column; gap: 18px; }
+
+  .article-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
   .article-card {
     display: flex;
     gap: 18px;
@@ -336,7 +405,11 @@
     color: inherit;
     transition: 0.18s;
   }
-  .article-card:hover { box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06); }
+
+  .article-card:hover {
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+  }
+
   .article-card h4 {
     font-size: 17px;
     font-weight: 700;
@@ -344,22 +417,26 @@
     color: #0f172a;
     line-height: 1.35;
   }
+
   .article-card p {
     font-size: 14px;
     color: #64748b;
     line-height: 1.6;
     margin-bottom: 10px;
   }
+
   .trending-panel {
     align-self: start;
     padding: 16px 18px;
     height: auto;
   }
+
   .trending-panel h4 {
     font-size: 15px;
     font-weight: 700;
     margin-bottom: 10px;
   }
+
   .trend-link {
     display: flex;
     align-items: center;
@@ -372,31 +449,60 @@
     font-weight: 500;
     line-height: 1.35;
   }
+
   .trend-link:last-child {
     border-bottom: none;
     padding-bottom: 0;
   }
-  .trend-link:first-of-type { padding-top: 0; }
+
+  .trend-link:first-of-type {
+    padding-top: 0;
+  }
+
   .trend-link i {
     color: #16a34a;
     font-size: 12px;
     flex-shrink: 0;
   }
+
   .trend-link span {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+
   @media (max-width: 1100px) {
-    .news-layout { grid-template-columns: 1fr; }
-    .featured-grid { grid-template-columns: 1fr; }
-    .latest-grid { grid-template-columns: 1fr; }
-    .article-card img { width: 140px; height: 100px; }
+    .news-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .featured-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .latest-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .article-card img {
+      width: 140px;
+      height: 100px;
+    }
   }
+
   @media (max-width: 640px) {
-    .news-page { padding: 20px 16px; }
-    .article-card { flex-direction: column; }
-    .article-card img { width: 100%; height: 180px; }
+    .news-page {
+      padding: 20px 16px;
+    }
+
+    .article-card {
+      flex-direction: column;
+    }
+
+    .article-card img {
+      width: 100%;
+      height: 180px;
+    }
   }
 </style>
 
@@ -407,7 +513,7 @@
         <h4>Danh mục tin tức</h4>
         {% for cat in categories %}
         <a href="{{ url_for('news_page', category=cat.id, tab=active_tab, q=search_query) }}"
-           class="cat-link {% if active_category == cat.id %}active{% endif %}">
+          class="cat-link {% if active_category == cat.id %}active{% endif %}">
           <span><i class="fas {{ cat.icon }}"></i>{{ cat.name }}</span>
           <span class="cat-badge">{{ cat.count }}</span>
         </a>
@@ -417,7 +523,8 @@
       <div class="sidebar-panel fact-box">
         <h4>Bạn có biết?</h4>
         <div class="fact-body">
-          <p>Việt Nam đang phát thải khoảng 1,8 triệu tấn rác nhựa mỗi năm. Phân loại rác tại nguồn giúp giảm tới 40% chi phí xử lý.</p>
+          <p>Việt Nam đang phát thải khoảng 1,8 triệu tấn rác nhựa mỗi năm. Phân loại rác tại nguồn giúp giảm tới 40%
+            chi phí xử lý.</p>
           <a href="{{ url_for('news_page', category='research') }}" class="btn-fact">Tìm hiểu thêm</a>
         </div>
       </div>
@@ -426,7 +533,13 @@
     <div class="news-main">
       <div class="news-header">
         <div class="news-icon">
-          <i class="fas fa-newspaper"></i>
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+            <rect x="8" y="10" width="24" height="22" rx="3" fill="#7c3aed" opacity=".15" />
+            <rect x="8" y="10" width="24" height="22" rx="3" stroke="#7c3aed" stroke-width="2" />
+            <line x1="13" y1="16" x2="27" y2="16" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" />
+            <line x1="13" y1="21" x2="27" y2="21" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" />
+            <line x1="13" y1="26" x2="21" y2="26" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" />
+          </svg>
         </div>
         <div class="news-title-wrapper">
           <h1 class="news-main-title">
@@ -476,16 +589,16 @@
       <div class="latest-header">
         <h3>Tin tức mới nhất</h3>
         <div class="filter-tabs">
-         {% for tab_item in tabs %}
-         <a href="{{ url_for('news_page', category=active_category, tab=tab_item.id, q=search_query) }}"
-           class="filter-tab {% if active_tab == tab_item.id %}active{% endif %}">{{ tab_item.name }}</a>
-         {% endfor %}
+          {% for tab_item in tabs %}
+          <a href="{{ url_for('news_page', category=active_category, tab=tab_item.id, q=search_query) }}"
+            class="filter-tab {% if active_tab == tab_item.id %}active{% endif %}">{{ tab_item.name }}</a>
+          {% endfor %}
         </div>
         <form class="search-row" method="get" action="{{ url_for('news_page') }}">
           <input type="hidden" name="category" value="{{ active_category }}">
           <input type="hidden" name="tab" value="{{ active_tab }}">
           <input class="search-input" type="search" name="q" value="{{ search_query }}"
-                 placeholder="Tìm kiếm tin tức...">
+            placeholder="Tìm kiếm tin tức...">
           <button type="submit" class="btn-filter"><i class="fas fa-filter"></i> Bộ lọc</button>
         </form>
       </div>
