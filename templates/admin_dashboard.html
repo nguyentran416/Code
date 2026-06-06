@@ -257,7 +257,226 @@
     @media (max-width: 576px) {
         .kpi-grid { grid-template-columns: 1fr; }
     }
+
+    /* Upgraded chart header & toggles */
+    .chart-header-wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+    .chart-toggle-group {
+        display: flex;
+        background: #f1f5f9;
+        padding: 3px;
+        border-radius: 10px;
+    }
+    .chart-toggle-btn {
+        border: none;
+        background: transparent;
+        color: #64748b;
+        font-size: 13px;
+        font-weight: 600;
+        padding: 6px 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .chart-toggle-btn.active {
+        background: #16a34a;
+        color: #ffffff;
+        box-shadow: 0 2px 6px rgba(22, 163, 74, 0.15);
+    }
+    .chart-toggle-btn:hover:not(.active) {
+        color: #0f172a;
+    }
+    
+    /* Date picker styles */
+    .date-picker-trigger {
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        padding: 8px 14px;
+        border-radius: 10px;
+        font-size: 13.5px;
+        font-weight: 600;
+        color: #475569;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+        user-select: none;
+    }
+    .date-picker-trigger:hover {
+        background: #f8fafc;
+        border-color: #94a3b8;
+        color: #0f172a;
+    }
+    
+    /* Footer styles */
+    .chart-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid #f1f5f9;
+        font-size: 14px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .chart-footer-left {
+        color: #475569;
+    }
+    .chart-footer-left strong {
+        color: #0f172a;
+        font-weight: 700;
+    }
+    .chart-footer-right {
+        font-weight: 700;
+    }
+    .trend-up {
+        color: #16a34a;
+    }
+    .trend-down {
+        color: #ef4444;
+    }
+    .trend-flat {
+        color: #64748b;
+    }
+
+    /* Flatpickr custom theme */
+    .flatpickr-calendar {
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        border: 1px solid #e2e8f0;
+        font-family: 'Be Vietnam Pro', sans-serif;
+    }
+    .flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange,
+    .flatpickr-day.selected.inRange, .flatpickr-day.startRange.inRange, .flatpickr-day.endRange.inRange,
+    .flatpickr-day.selected:focus, .flatpickr-day.startRange:focus, .flatpickr-day.endRange:focus,
+    .flatpickr-day.selected:hover, .flatpickr-day.startRange:hover, .flatpickr-day.endRange:hover {
+        background: #16a34a !important;
+        border-color: #16a34a !important;
+    }
+    .flatpickr-day.inRange {
+        background: #f0fdf4 !important;
+        box-shadow: -5px 0 0 #f0fdf4, 5px 0 0 #f0fdf4 !important;
+    }
+    .flatpickr-months .flatpickr-prev-month:hover svg,
+    .flatpickr-months .flatpickr-next-month:hover svg {
+        fill: #16a34a !important;
+    }
+
+    /* Popular waste types card redesign styles */
+    .popular-waste-list {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        margin-top: 10px;
+    }
+    .popular-waste-item {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+    .popular-waste-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+        flex-shrink: 0;
+    }
+    .popular-waste-icon.organic { background: #ecfdf5; color: #16a34a; }
+    .popular-waste-icon.recyclable { background: #eff6ff; color: #2563eb; }
+    .popular-waste-icon.inorganic { background: #fff7ed; color: #ea580c; }
+    .popular-waste-icon.hazardous { background: #fff1f2; color: #ef4444; }
+
+    .popular-waste-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: #334155;
+        width: 100px;
+        flex-shrink: 0;
+    }
+    .popular-waste-progress {
+        flex: 1;
+        height: 8px;
+        background: #f1f5f9;
+        border-radius: 999px;
+        overflow: hidden;
+        position: relative;
+    }
+    .popular-waste-bar {
+        height: 100%;
+        border-radius: 999px;
+        transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        width: 0;
+    }
+    .popular-waste-bar.organic { background: #22c55e; }
+    .popular-waste-bar.recyclable { background: #3b82f6; }
+    .popular-waste-bar.inorganic { background: #f59e0b; }
+    .popular-waste-bar.hazardous { background: #ef4444; }
+
+    .popular-waste-value {
+        font-size: 14px;
+        font-weight: 700;
+        color: #0f172a;
+        width: 95px;
+        text-align: right;
+        flex-shrink: 0;
+    }
+    .popular-waste-value span {
+        font-weight: 500;
+        color: #94a3b8;
+        margin-left: 4px;
+    }
+
+    /* Redesigned Donut Legend */
+    .donut-legend-new {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 18px;
+        min-width: 0;
+        padding-left: 24px;
+    }
+    .legend-item-new {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 14.5px;
+        color: #334155;
+        font-weight: 600;
+    }
+    .legend-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    .legend-dot-new {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+    .legend-dot-new.organic { background-color: #22c55e; }
+    .legend-dot-new.recyclable { background-color: #3b82f6; }
+    .legend-dot-new.inorganic { background-color: #f59e0b; }
+    .legend-dot-new.hazardous { background-color: #ef4444; }
+
+    .legend-percent {
+        font-weight: 700;
+        color: #0f172a;
+    }
 </style>
+<link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
 {% endblock %}
 
 {% block admin_content %}
@@ -281,9 +500,31 @@
 
 <div class="panel-grid">
     <div class="panel-card chart-line">
-        <h3>Lượt phân loại theo thời gian</h3>
+        <div class="chart-header-wrapper">
+            <div>
+                <h3 class="mb-2" style="font-size: 17px; font-weight: 700;">Lượt phân loại theo thời gian</h3>
+                <div class="chart-toggle-group">
+                    <button type="button" class="chart-toggle-btn active" id="btn-group-day" onclick="changeGroupBy('day')">Theo ngày</button>
+                    <button type="button" class="chart-toggle-btn" id="btn-group-week" onclick="changeGroupBy('week')">Theo tuần</button>
+                </div>
+            </div>
+            <div>
+                <div class="date-picker-trigger" id="date-range-btn">
+                    📅 <span id="date-range-label">Chọn khoảng ngày</span>
+                </div>
+                <input type="text" id="date-range-picker" style="display: none;">
+            </div>
+        </div>
         <div class="chart-line-body">
             <canvas id="lineChart"></canvas>
+        </div>
+        <div class="chart-footer">
+            <div class="chart-footer-left" id="chart-summary-left">
+                <!-- Calculated dynamically -->
+            </div>
+            <div class="chart-footer-right" id="chart-summary-right">
+                <!-- Calculated dynamically -->
+            </div>
         </div>
     </div>
     <div class="panel-card chart-donut">
@@ -292,14 +533,14 @@
             <div class="donut-chart-box">
                 <canvas id="donutChart"></canvas>
             </div>
-            <div class="donut-legend">
+            <div class="donut-legend-new">
                 {% for item in category_stats %}
-                <div class="legend-item">
-                    <span class="legend-dot legend-dot--{{ item.key }}"></span>
-                    <div>
-                        <div>{{ item.label }}</div>
-                        <div class="legend-meta">{{ item.percent }}% · {{ item.count }} lượt</div>
+                <div class="legend-item-new">
+                    <div class="legend-left">
+                        <span class="legend-dot-new {{ item.key }}"></span>
+                        <span>{{ item.label }}</span>
                     </div>
+                    <span class="legend-percent">{{ item.percent | round | int }}%</span>
                 </div>
                 {% endfor %}
             </div>
@@ -309,21 +550,35 @@
 
 <div class="bottom-grid">
     <div class="panel-card">
-        <h3>Các loại rác phổ biến</h3>
-        {% for item in waste_stats %}
-        <div class="waste-item">
-            <div class="waste-item-head">
-                <span>{{ item.waste_type_vn }}</span>
-                <span>{{ item.percent }}% ({{ item.count }})</span>
-            </div>
-            <div class="waste-bar">
-                <span class="waste-bar-fill waste-bar--{{ item.waste_type }}"
-                      data-percent="{{ item.percent }}"></span>
-            </div>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="mb-0" style="font-size: 17px; font-weight: 700;">Các loại rác phổ biến</h3>
+            <i class="fa-solid fa-leaf" style="color: #16a34a; font-size: 18px;"></i>
         </div>
-        {% else %}
-        <p class="text-muted mb-0">Chưa có dữ liệu phân loại.</p>
-        {% endfor %}
+        
+        <div class="popular-waste-list">
+            {% set icons = {
+                'organic': 'fa-solid fa-leaf',
+                'recyclable': 'fa-solid fa-recycle',
+                'inorganic': 'fa-solid fa-trash-can',
+                'hazardous': 'fa-solid fa-biohazard'
+            } %}
+            {% for item in category_stats %}
+            <div class="popular-waste-item">
+                <div class="popular-waste-icon {{ item.key }}">
+                    <i class="{{ icons.get(item.key, 'fa-solid fa-box') }}"></i>
+                </div>
+                <div class="popular-waste-name">{{ item.label }}</div>
+                <div class="popular-waste-progress">
+                    <div class="popular-waste-bar-fill popular-waste-bar {{ item.key }}" data-percent="{{ item.percent }}"></div>
+                </div>
+                <div class="popular-waste-value">
+                    {{ item.percent | round | int }}% <span>({{ item.count }})</span>
+                </div>
+            </div>
+            {% else %}
+            <p class="text-muted mb-0">Chưa có dữ liệu phân loại.</p>
+            {% endfor %}
+        </div>
     </div>
 
     <div class="panel-card activity-panel">
@@ -353,43 +608,16 @@
 
 {% block extra_js %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
     const dashboardData = JSON.parse(
         document.getElementById('dashboardChartData').textContent
     );
-    const chartLabels = dashboardData.labels;
-    const chartValues = dashboardData.values;
     const categoryStats = dashboardData.categories;
 
-    document.querySelectorAll('.waste-bar-fill').forEach(function (bar) {
+    document.querySelectorAll('.waste-bar-fill, .popular-waste-bar-fill').forEach(function (bar) {
         const percent = parseFloat(bar.dataset.percent || '0');
         bar.style.width = Math.min(Math.max(percent, 0), 100) + '%';
-    });
-
-    new Chart(document.getElementById('lineChart'), {
-        type: 'line',
-        data: {
-            labels: chartLabels,
-            datasets: [{
-                label: 'Lượt phân loại',
-                data: chartValues,
-                borderColor: '#22c55e',
-                backgroundColor: 'rgba(34, 197, 94, 0.14)',
-                fill: true,
-                tension: 0.35,
-                pointRadius: 4,
-                pointBackgroundColor: '#16a34a'
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-                y: { beginAtZero: true, ticks: { precision: 0 }, grid: { color: '#f1f5f9' } },
-                x: { grid: { display: false } }
-            }
-        }
     });
 
     new Chart(document.getElementById('donutChart'), {
@@ -399,7 +627,8 @@
             datasets: [{
                 data: categoryStats.map(item => item.count),
                 backgroundColor: categoryStats.map(item => item.color),
-                borderWidth: 0
+                borderWidth: 2,
+                borderColor: '#ffffff'
             }]
         },
         options: {
@@ -417,17 +646,277 @@
                 const { ctx, chartArea: { top, bottom, left, right } } = chart;
                 const total = categoryStats.reduce((sum, item) => sum + item.count, 0);
                 ctx.save();
-                ctx.font = 'bold 20px Be Vietnam Pro';
-                ctx.fillStyle = '#0f172a';
+                // Draw label "Tổng" at the top
+                ctx.font = '500 14px Be Vietnam Pro';
+                ctx.fillStyle = '#64748b';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.fillText(total.toString(), (left + right) / 2, (top + bottom) / 2 - 8);
-                ctx.font = '12px Be Vietnam Pro';
-                ctx.fillStyle = '#64748b';
-                ctx.fillText('Tổng', (left + right) / 2, (top + bottom) / 2 + 12);
+                ctx.fillText('Tổng', (left + right) / 2, (top + bottom) / 2 - 12);
+                
+                // Draw the number below
+                ctx.font = 'bold 22px Be Vietnam Pro';
+                ctx.fillStyle = '#0f172a';
+                ctx.fillText(total.toLocaleString('en-US'), (left + right) / 2, (top + bottom) / 2 + 10);
                 ctx.restore();
             }
         }]
+    });
+
+    // Line Chart Logic - Interactive & Dynamic
+    let currentGroupBy = 'day';
+    let startDateStr = '';
+    let endDateStr = '';
+    let myLineChart = null;
+    let flatpickrInstance = null;
+
+    // Helper: format Date object as YYYY-MM-DD
+    function formatDateISO(date) {
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, '0');
+        const d = String(date.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+    }
+
+    // Initialize Line Chart
+    function initLineChart(labels, values) {
+        const ctx = document.getElementById('lineChart').getContext('2d');
+        
+        // Custom vertical line plugin
+        const verticalLinePlugin = {
+            id: 'verticalLine',
+            afterDraw(chart) {
+                if (chart.tooltip?._active?.length) {
+                    const activePoint = chart.tooltip._active[0];
+                    const ctx = chart.ctx;
+                    const x = activePoint.element.x;
+                    const topY = chart.scales.y.top;
+                    const bottomY = chart.scales.y.bottom;
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.moveTo(x, topY);
+                    ctx.lineTo(x, bottomY);
+                    ctx.lineWidth = 1;
+                    ctx.strokeStyle = 'rgba(22, 163, 74, 0.25)';
+                    ctx.setLineDash([4, 4]);
+                    ctx.stroke();
+                    ctx.restore();
+                }
+            }
+        };
+
+        myLineChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Lượt phân loại',
+                    data: values,
+                    borderColor: '#16a34a',
+                    backgroundColor: function(context) {
+                        const chart = context.chart;
+                        const {ctx, chartArea} = chart;
+                        if (!chartArea) return null;
+                        const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+                        gradient.addColorStop(0, 'rgba(22, 163, 74, 0.22)');
+                        gradient.addColorStop(1, 'rgba(22, 163, 74, 0.01)');
+                        return gradient;
+                    },
+                    fill: true,
+                    tension: 0.35,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#ffffff',
+                    pointBorderColor: '#16a34a',
+                    pointBorderWidth: 2,
+                    pointHoverRadius: 7,
+                    pointHoverBackgroundColor: '#ffffff',
+                    pointHoverBorderColor: '#16a34a',
+                    pointHoverBorderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: 'index',
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        enabled: true,
+                        backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                        titleColor: '#ffffff',
+                        titleFont: { family: 'Be Vietnam Pro', weight: 'bold', size: 12 },
+                        bodyColor: '#10b981',
+                        bodyFont: { family: 'Be Vietnam Pro', weight: 'bold', size: 13 },
+                        padding: 10,
+                        cornerRadius: 8,
+                        displayColors: false,
+                        callbacks: {
+                            title: function(context) {
+                                let label = context[0].label || '';
+                                return label.replace('\n', ' - ');
+                            },
+                            label: function(context) {
+                                return '● ' + context.raw + ' lượt phân loại';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: { 
+                        beginAtZero: true, 
+                        ticks: { precision: 0, font: { family: 'Be Vietnam Pro' } }, 
+                        grid: { color: '#f1f5f9' } 
+                    },
+                    x: { 
+                        ticks: {
+                            font: { family: 'Be Vietnam Pro' },
+                            maxRotation: 0,
+                            autoSkip: true,
+                            maxTicksLimit: 12,
+                            callback: function(val, index) {
+                                const text = this.getLabelForValue(val);
+                                return text.split('\n');
+                            }
+                        },
+                        grid: { display: false } 
+                    }
+                }
+            },
+            plugins: [verticalLinePlugin]
+        });
+    }
+
+    // Update Line Chart content
+    function updateLineChart(labels, values) {
+        if (myLineChart) {
+            myLineChart.data.labels = labels;
+            myLineChart.data.datasets[0].data = values;
+            myLineChart.update();
+        } else {
+            initLineChart(labels, values);
+        }
+    }
+
+    // Update Footer summaries dynamically
+    function updateFooter(total, percentChange, periodLabel, prevLabel) {
+        const formattedTotal = total.toLocaleString('vi-VN');
+        document.getElementById('chart-summary-left').innerHTML = `Tổng lượt phân loại trong <strong>${periodLabel}</strong>: <strong>${formattedTotal}</strong>`;
+        
+        let trendHtml = '';
+        const absChange = Math.abs(percentChange).toLocaleString('vi-VN', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+        if (percentChange > 0) {
+            trendHtml = `<span class="trend-up">▲ ${absChange}%</span> so với ${prevLabel}`;
+        } else if (percentChange < 0) {
+            trendHtml = `<span class="trend-down">▼ ${absChange}%</span> so với ${prevLabel}`;
+        } else {
+            trendHtml = `<span class="trend-flat">0.0%</span> so với ${prevLabel}`;
+        }
+        document.getElementById('chart-summary-right').innerHTML = trendHtml;
+    }
+
+    // Fetch and redraw chart
+    function fetchChartData() {
+        let url = `/admin/api/classification-stats?group_by=${currentGroupBy}`;
+        if (startDateStr && endDateStr) {
+            url += `&start_date=${startDateStr}&end_date=${endDateStr}`;
+        }
+        
+        fetch(url)
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    console.error("API error:", data.error);
+                    return;
+                }
+                updateLineChart(data.labels, data.values);
+                updateFooter(data.total, data.percent_change, data.period_label, data.prev_label);
+            })
+            .catch(err => console.error("Error fetching stats:", err));
+    }
+
+    // Handle Group By click
+    window.changeGroupBy = function(groupBy) {
+        if (currentGroupBy === groupBy) return;
+        currentGroupBy = groupBy;
+
+        document.getElementById('btn-group-day').classList.toggle('active', groupBy === 'day');
+        document.getElementById('btn-group-week').classList.toggle('active', groupBy === 'week');
+
+        const end = new Date();
+        const start = new Date();
+        if (groupBy === 'week') {
+            start.setDate(end.getDate() - 27); // 4 weeks
+        } else {
+            start.setDate(end.getDate() - 6); // 7 days
+        }
+
+        startDateStr = formatDateISO(start);
+        endDateStr = formatDateISO(end);
+        
+        if (flatpickrInstance) {
+            flatpickrInstance.setDate([start, end]);
+        }
+
+        const displayStart = `${String(start.getDate()).padStart(2, '0')}/${String(start.getMonth() + 1).padStart(2, '0')}/${start.getFullYear()}`;
+        const displayEnd = `${String(end.getDate()).padStart(2, '0')}/${String(end.getMonth() + 1).padStart(2, '0')}/${end.getFullYear()}`;
+        document.getElementById('date-range-label').textContent = `${displayStart} - ${displayEnd}`;
+
+        fetchChartData();
+    };
+
+    // Initialize flatpickr on page load
+    document.addEventListener("DOMContentLoaded", function() {
+        const end = new Date();
+        const start = new Date();
+        start.setDate(end.getDate() - 6); // Default 7 days
+
+        startDateStr = formatDateISO(start);
+        endDateStr = formatDateISO(end);
+
+        const displayStart = `${String(start.getDate()).padStart(2, '0')}/${String(start.getMonth() + 1).padStart(2, '0')}/${start.getFullYear()}`;
+        const displayEnd = `${String(end.getDate()).padStart(2, '0')}/${String(end.getMonth() + 1).padStart(2, '0')}/${end.getFullYear()}`;
+        document.getElementById('date-range-label').textContent = `${displayStart} - ${displayEnd}`;
+
+        flatpickrInstance = flatpickr("#date-range-picker", {
+            mode: "range",
+            dateFormat: "Y-m-d",
+            defaultDate: [start, end],
+            maxDate: "today",
+            locale: {
+                rangeSeparator: " đến ",
+                weekdays: {
+                    shorthand: ["CN", "T2", "T3", "T4", "T5", "T6", "T7"],
+                    longhand: ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm", "Thứ sáu", "Thứ bảy"]
+                },
+                months: {
+                    shorthand: ["Th1", "Th2", "Th3", "Th4", "Th5", "Th6", "Th7", "Th8", "Th9", "Th10", "Th11", "Th12"],
+                    longhand: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"]
+                }
+            },
+            onClose: function(selectedDates, dateStr, instance) {
+                if (selectedDates.length === 2) {
+                    const s = formatDateISO(selectedDates[0]);
+                    const e = formatDateISO(selectedDates[1]);
+                    startDateStr = s;
+                    endDateStr = e;
+
+                    const dS = `${String(selectedDates[0].getDate()).padStart(2, '0')}/${String(selectedDates[0].getMonth() + 1).padStart(2, '0')}/${selectedDates[0].getFullYear()}`;
+                    const dE = `${String(selectedDates[1].getDate()).padStart(2, '0')}/${String(selectedDates[1].getMonth() + 1).padStart(2, '0')}/${selectedDates[1].getFullYear()}`;
+                    document.getElementById('date-range-label').textContent = `${dS} - ${dE}`;
+
+                    fetchChartData();
+                }
+            }
+        });
+
+        document.getElementById('date-range-btn').addEventListener('click', function() {
+            flatpickrInstance.open();
+        });
+
+        // Fetch initial data
+        fetchChartData();
     });
 </script>
 {% endblock %}

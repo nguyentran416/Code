@@ -15,7 +15,7 @@ import re
 from sqlalchemy import func, inspect, text
 import numpy as np
 from PIL import Image, ImageDraw, ImageEnhance, ImageFont, ImageOps
-from flask import Flask, request, render_template, url_for, redirect, session, flash, abort
+from flask import Flask, request, render_template, url_for, redirect, session, flash, abort, jsonify
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
@@ -188,12 +188,21 @@ class User(db.Model):
     password = db.Column(db.String(255), nullable=False, server_default='')
     points   = db.Column(db.Integer, default=0)
     role     = db.Column(db.String(20), default='user', nullable=False)
+    status   = db.Column(db.String(20), default='active', nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    full_name  = db.Column(db.String(150), nullable=True)
 
-    def __init__(self, username=None, password=None, points=0, role='user', **kwargs):
+    def __init__(self, username=None, password=None, points=0, role='user', status='active', created_at=None, full_name=None, **kwargs):
         if username is not None: kwargs['username'] = username
         if password is not None: kwargs['password'] = password
         if points is not None: kwargs['points'] = points
         if role is not None: kwargs['role'] = role
+        if status is not None: kwargs['status'] = status
+        if created_at is not None: 
+            kwargs['created_at'] = created_at
+        else:
+            kwargs['created_at'] = datetime.utcnow()
+        if full_name is not None: kwargs['full_name'] = full_name
         for key, value in kwargs.items():
             setattr(self, key, value)
 
@@ -287,10 +296,20 @@ def ensure_user_columns():
             conn.execute(text("ALTER TABLE user ADD COLUMN role VARCHAR(20) DEFAULT 'user'"))
         if 'password' not in columns:
             conn.execute(text("ALTER TABLE user ADD COLUMN password VARCHAR(255) DEFAULT '' NOT NULL"))
+        if 'status' not in columns:
+            conn.execute(text("ALTER TABLE user ADD COLUMN status VARCHAR(20) DEFAULT 'active'"))
+        if 'created_at' not in columns:
+            conn.execute(text("ALTER TABLE user ADD COLUMN created_at DATETIME"))
+            conn.execute(text("UPDATE user SET created_at = CURRENT_TIMESTAMP WHERE created_at IS NULL"))
+        if 'full_name' not in columns:
+            conn.execute(text("ALTER TABLE user ADD COLUMN full_name VARCHAR(150)"))
             
     admin_user = User.query.filter_by(username='admin').first()
-    if admin_user and admin_user.role != 'admin':
-        admin_user.role = 'admin'
+    if admin_user:
+        if admin_user.role != 'admin':
+            admin_user.role = 'admin'
+        if not admin_user.full_name:
+            admin_user.full_name = 'Hệ thống Admin'
         db.session.commit()
 
 
@@ -2608,13 +2627,263 @@ def admin_dashboard():
     return render_template('admin_dashboard.html', **get_admin_dashboard_context(user))
 
 
+@app.route('/admin/api/classification-stats')
+def admin_api_classification_stats():
+    user, denied = require_admin()
+    if denied: return jsonify({'error': 'Unauthorized'}), 403
+    
+    start_str = request.args.get('start_date')
+    end_str = request.args.get('end_date')
+    group_by = request.args.get('group_by', 'day')
+    
+    try:
+        if start_str and end_str:
+            start_date = datetime.strptime(start_str, '%Y-%m-%d').date()
+            end_date = datetime.strptime(end_str, '%Y-%m-%d').date()
+        else:
+            end_date = datetime.utcnow().date()
+            if group_by == 'week':
+                start_date = end_date - timedelta(days=27)
+            else:
+                start_date = end_date - timedelta(days=6)
+    except ValueError:
+        return jsonify({'error': 'Invalid date format, use YYYY-MM-DD'}), 400
+        
+    start_datetime = datetime.combine(start_date, datetime.min.time())
+    end_datetime = datetime.combine(end_date, datetime.max.time())
+    
+    activities = UserActivity.query.filter(
+        UserActivity.action.like('Phân loại%'),
+        UserActivity.timestamp >= start_datetime,
+        UserActivity.timestamp <= end_datetime
+    ).all()
+    
+    # Calculate previous period stats for comparison
+    period_days = (end_date - start_date).days + 1
+    prev_start_date = start_date - timedelta(days=period_days)
+    prev_end_date = start_date - timedelta(days=1)
+    prev_start_datetime = datetime.combine(prev_start_date, datetime.min.time())
+    prev_end_datetime = datetime.combine(prev_end_date, datetime.max.time())
+    
+    prev_activities = UserActivity.query.filter(
+        UserActivity.action.like('Phân loại%'),
+        UserActivity.timestamp >= prev_start_datetime,
+        UserActivity.timestamp <= prev_end_datetime
+    ).all()
+    
+    total_prev = sum(len(expand_activity_to_waste_types(a.action)) for a in prev_activities)
+    
+    labels = []
+    values = []
+    
+    WEEKDAYS_VN = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ nhật"]
+    
+    if group_by == 'week':
+        first_monday = start_date - timedelta(days=start_date.weekday())
+        current_week = first_monday
+        week_index = 1
+        
+        while current_week <= end_date:
+            next_week = current_week + timedelta(days=7)
+            week_sum = sum(
+                len(expand_activity_to_waste_types(a.action))
+                for a in activities
+                if current_week <= a.timestamp.date() < next_week
+            )
+            labels.append(f"Tuần {week_index}\n{current_week.strftime('%d/%m')}")
+            values.append(week_sum)
+            current_week = next_week
+            week_index += 1
+    else:
+        current_day = start_date
+        while current_day <= end_date:
+            day_sum = sum(
+                len(expand_activity_to_waste_types(a.action))
+                for a in activities
+                if a.timestamp.date() == current_day
+            )
+            labels.append(f"{WEEKDAYS_VN[current_day.weekday()]}\n{current_day.strftime('%d/%m')}")
+            values.append(day_sum)
+            current_day += timedelta(days=1)
+            
+    total_current = sum(values)
+    
+    if total_prev > 0:
+        percent_change = round(((total_current - total_prev) / total_prev) * 100, 1)
+    else:
+        percent_change = 100.0 if total_current > 0 else 0.0
+        
+    return jsonify({
+        'labels': labels,
+        'values': values,
+        'total': total_current,
+        'percent_change': percent_change,
+        'period_label': f"{period_days} ngày" if group_by == 'day' else f"{len(labels)} tuần",
+        'prev_label': f"{period_days} ngày trước" if group_by == 'day' else f"{len(labels)} tuần trước"
+    })
+
+
 @app.route('/admin/users')
 def admin_users():
     user, denied = require_admin()
     if denied: return denied
-    return render_template('admin_users.html', user=user, is_admin=True, active_page='users',
-                           users=User.query.order_by(User.id).all(),
-                           customer_data=get_customer_data_for_admin())
+    
+    get_customer_data_for_admin() # Ensure customer data exists
+    users = User.query.order_by(User.id.asc()).all()
+    
+    # Map users to dict for easier front-end filtering
+    rows = []
+    for u in users:
+        cust = u.customer_data[0] if u.customer_data else None
+        rows.append({
+            'id': u.id,
+            'username': u.username,
+            'points': u.points,
+            'role': u.role,
+            'status': getattr(u, 'status', 'active') or 'active',
+            'created_at': (getattr(u, 'created_at', None) or datetime.utcnow()).isoformat(),
+            'created_at_text': (getattr(u, 'created_at', None) or datetime.utcnow()).strftime('%d/%m/%Y %H:%M'),
+            'full_name': getattr(u, 'full_name', '') or u.username or '',
+            'email': (cust.email if cust else '') or '',
+            'phone': (cust.phone if cust else '') or '',
+            'address': (cust.address if cust else '') or ''
+        })
+        
+    # Calculate stats
+    total_users = User.query.count()
+    prev_total_users = User.query.filter(User.created_at < datetime.utcnow() - timedelta(days=30)).count()
+    total_change = round(((total_users - prev_total_users) / prev_total_users * 100), 1) if prev_total_users > 0 else (100.0 if total_users > 0 else 0.0)
+    
+    admins_count = User.query.filter((User.role == 'admin') | (User.username == 'admin')).count()
+    prev_admins_count = User.query.filter(((User.role == 'admin') | (User.username == 'admin')) & (User.created_at < datetime.utcnow() - timedelta(days=30))).count()
+    admins_change = round(((admins_count - prev_admins_count) / prev_admins_count * 100), 1) if prev_admins_count > 0 else (100.0 if admins_count > 0 else 0.0)
+    
+    regular_count = User.query.filter((User.role == 'user') & (User.username != 'admin')).count()
+    prev_regular_count = User.query.filter(((User.role == 'user') & (User.username != 'admin')) & (User.created_at < datetime.utcnow() - timedelta(days=30))).count()
+    regular_change = round(((regular_count - prev_regular_count) / prev_regular_count * 100), 1) if prev_regular_count > 0 else (100.0 if regular_count > 0 else 0.0)
+    
+    new_users_count = User.query.filter(User.created_at >= datetime.utcnow() - timedelta(days=30)).count()
+    prev_new_users_count = User.query.filter((User.created_at >= datetime.utcnow() - timedelta(days=60)) & (User.created_at < datetime.utcnow() - timedelta(days=30))).count()
+    new_users_change = round(((new_users_count - prev_new_users_count) / prev_new_users_count * 100), 1) if prev_new_users_count > 0 else (100.0 if new_users_count > 0 else 0.0)
+    
+    stats = {
+        'total_users': total_users,
+        'total_change': total_change,
+        'admins_count': admins_count,
+        'admins_change': admins_change,
+        'regular_count': regular_count,
+        'regular_change': regular_change,
+        'new_users_count': new_users_count,
+        'new_users_change': new_users_change
+    }
+    
+    return render_template('admin_users.html', user=user, is_admin=True, active_page='users', users=rows, stats=stats)
+
+
+@app.route('/admin/users/add', methods=['POST'])
+def admin_user_add():
+    user = get_current_user()
+    if not user or not is_admin_user(user): return "Bạn không có quyền!", 403
+    
+    username = request.form.get('username')
+    password = request.form.get('password')
+    full_name = request.form.get('full_name')
+    email = request.form.get('email')
+    phone = request.form.get('phone')
+    address = request.form.get('address')
+    role = request.form.get('role', 'user')
+    status = request.form.get('status', 'active')
+    
+    if not username or not password:
+        flash("Vui lòng điền đầy đủ Username và Mật khẩu!", "danger")
+        return redirect(url_for('admin_users'))
+        
+    existing = User.query.filter_by(username=username).first()
+    if existing:
+        flash("Username đã tồn tại!", "danger")
+        return redirect(url_for('admin_users'))
+        
+    new_u = User(
+        username=username,
+        password=generate_password_hash(password),
+        role=role,
+        status=status,
+        full_name=full_name,
+        points=0
+    )
+    db.session.add(new_u)
+    db.session.commit()
+    
+    cust = CustomerData(
+        user_id=new_u.id,
+        email=email,
+        phone=phone,
+        address=address
+    )
+    db.session.add(cust)
+    db.session.commit()
+    
+    flash("Thêm người dùng thành công!", "success")
+    return redirect(url_for('admin_users'))
+
+
+@app.route('/admin/users/<int:user_id>/edit', methods=['POST'])
+def admin_user_edit(user_id):
+    user = get_current_user()
+    if not user or not is_admin_user(user): return "Bạn không có quyền!", 403
+    
+    u = User.query.get_or_404(user_id)
+    
+    if u.username == 'admin' and request.form.get('role') != 'admin':
+        flash("Không thể hạ quyền của tài khoản admin mặc định!", "danger")
+        return redirect(url_for('admin_users'))
+        
+    u.full_name = request.form.get('full_name')
+    u.role = request.form.get('role', u.role)
+    u.status = request.form.get('status', u.status)
+    
+    new_password = request.form.get('password')
+    if new_password:
+        u.password = generate_password_hash(new_password)
+        
+    new_points = request.form.get('points')
+    if new_points is not None:
+        try:
+            u.points = int(new_points)
+        except ValueError:
+            pass
+        
+    cust = CustomerData.query.filter_by(user_id=u.id).first()
+    if not cust:
+        cust = CustomerData(user_id=u.id)
+        db.session.add(cust)
+        
+    cust.email = request.form.get('email')
+    cust.phone = request.form.get('phone')
+    cust.address = request.form.get('address')
+    
+    db.session.commit()
+    flash("Cập nhật thông tin thành công!", "success")
+    return redirect(url_for('admin_users'))
+
+
+@app.route('/admin/users/<int:user_id>/delete', methods=['POST'])
+def admin_user_delete(user_id):
+    user = get_current_user()
+    if not user or not is_admin_user(user): return "Bạn không có quyền!", 403
+    
+    u = User.query.get_or_404(user_id)
+    if u.username == 'admin':
+        flash("Không thể xóa tài khoản admin mặc định!", "danger")
+        return redirect(url_for('admin_users'))
+        
+    CustomerData.query.filter_by(user_id=u.id).delete()
+    UserActivity.query.filter_by(user_id=u.id).delete()
+    
+    db.session.delete(u)
+    db.session.commit()
+    flash("Xóa người dùng thành công!", "success")
+    return redirect(url_for('admin_users'))
 
 
 @app.route('/admin/reports')
