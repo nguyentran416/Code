@@ -65,7 +65,7 @@ DETECT_GRID_MIN_SCORE     = float(os.environ.get('DETECT_GRID_MIN_SCORE',     '0
 DETECT_MIN_COMBINED_SCORE = float(os.environ.get('DETECT_MIN_COMBINED_SCORE', '0.25'))
 
 # Diện tích box hợp lệ — giảm min, tăng max
-DETECT_MIN_BOX_AREA = float(os.environ.get('DETECT_MIN_BOX_AREA', '0.04'))   # Tăng lên để loại box nhỏ, giảm tách nhỏ
+DETECT_MIN_BOX_AREA = float(os.environ.get('DETECT_MIN_BOX_AREA', '0.04'))   # Hạ xuống 0.01 để không bỏ sót các vật nhỏ/chiếc dép lẻ
 DETECT_MAX_BOX_AREA = float(os.environ.get('DETECT_MAX_BOX_AREA', '0.92'))    # Cho phép vật lớn hơn
 
 GRID_FALLBACK_ENABLED    = os.environ.get('GRID_FALLBACK_ENABLED', 'true').lower() in ('1', 'true', 'yes')
@@ -73,9 +73,38 @@ USE_SSD_DETECTION        = os.environ.get('USE_SSD_DETECTION', 'true').lower() i
 USE_SALIENCY_DETECTION   = os.environ.get('USE_SALIENCY_DETECTION', 'true').lower() in ('1', 'true', 'yes')
 
 # Saliency — bổ sung khi SSD bỏ sót (ngưỡng thấp hơn)
-SALIENCY_MIN_AREA_RATIO  = float(os.environ.get('SALIENCY_MIN_AREA_RATIO',  '0.010'))  # 1.0%
+SALIENCY_MIN_AREA_RATIO  = float(os.environ.get('SALIENCY_MIN_AREA_RATIO',  '0.010'))  # Hạ xuống 0.5% để bắt vùng Saliency nhỏ hơn
 SALIENCY_MAX_AREA_RATIO  = float(os.environ.get('SALIENCY_MAX_AREA_RATIO',  '0.95'))   # tới 95%
-SALIENCY_MIN_LABEL_SCORE = float(os.environ.get('SALIENCY_MIN_LABEL_SCORE', '0.45'))   # Thấp hơn
+SALIENCY_MIN_LABEL_SCORE = float(os.environ.get('SALIENCY_MIN_LABEL_SCORE', '0.45'))   # Tăng để tránh nhiễu background
+
+# COCO classes representing background structure or large furniture/people to ignore
+EXCLUDED_COCO_CLASSES = {
+    1,   # person
+    2,   # bicycle
+    3,   # car
+    4,   # motorcycle
+    5,   # airplane
+    6,   # bus
+    7,   # train
+    8,   # truck
+    9,   # boat
+    15,  # bench
+    27,  # backpack
+    31,  # handbag
+    33,  # suitcase
+    62,  # chair
+    63,  # couch
+    64,  # potted plant
+    65,  # bed
+    67,  # dining table
+    70,  # toilet
+    72,  # tv
+    78,  # microwave
+    79,  # oven
+    80,  # toaster
+    81,  # sink
+    82,  # refrigerator
+}
 
 MAX_MULTI_DETECTIONS = int(os.environ.get('MAX_MULTI_DETECTIONS', '12'))  # Tăng lên 12
 IMG_CLASSIFY_SIZE    = 224
@@ -587,7 +616,7 @@ except Exception:
 
 DETECTION_MODEL_SOURCE = os.environ.get(
     'DETECTION_MODEL_SOURCE',
-    'https://tfhub.dev/tensorflow/ssd_mobilenet_v2/2',
+    os.path.join(BASE_DIR, 'models', 'ssd_mobilenet_v2'),
 )
 _detection_model = None
 
@@ -647,50 +676,70 @@ def compute_iou_xyxy(box_a, box_b):
 
 
 def suppress_overlapping_detections(detections, iou_threshold=NMS_IOU_THRESHOLD, class_agnostic=False):
-    # Chỉ giữ lại box lớn nhất, score cao nhất cho mỗi loại vật thể
-    best_per_label = {}
-    for det in detections:
+    """
+    Standard Non-Maximum Suppression (NMS) với bộ lọc nhãn thông minh:
+    - Nếu hai box có CÙNG nhãn: triệt tiêu nếu IoU > iou_threshold (mặc định 0.35).
+    - Nếu hai box KHÁC nhãn: triệt tiêu nếu IoU > 0.65 (để tránh nhận diện trùng 2 nhãn cho cùng 1 vật thể).
+      Nếu class_agnostic=True, sử dụng ngưỡng min(0.65, iou_threshold) cho nhãn khác nhau.
+    - Nếu một hộp Saliency trùng lặp nhiều (>50% diện tích của chính nó) với một hộp SSD có CÙNG nhãn: triệt tiêu Saliency.
+    """
+    if not detections:
+        return []
+    
+    # Sắp xếp theo score giảm dần
+    sorted_dets = sorted(detections, key=lambda d: d.get('score', 0.0), reverse=True)
+    kept = []
+    
+    for det in sorted_dets:
+        box = det.get('bbox', [0, 0, 0, 0])
         label = det.get('label')
-        if not label:
-            continue
-        area = _box_dimensions(det.get('bbox', [0,0,0,0]))[2]
-        score = det.get('score', 0.0)
-        if label not in best_per_label:
-            best_per_label[label] = det
-        else:
-            prev = best_per_label[label]
-            prev_area = _box_dimensions(prev.get('bbox', [0,0,0,0]))[2]
-            prev_score = prev.get('score', 0.0)
-            # Ưu tiên score, nếu bằng thì ưu tiên area lớn hơn
-            if score > prev_score or (score == prev_score and area > prev_area):
-                best_per_label[label] = det
-
-    # Loại bỏ box lồng trong box lớn (nếu có nhiều box cùng label, chỉ giữ 1)
-    kept = list(best_per_label.values())
-    # Nếu vẫn còn box lồng nhau (do label khác), loại box nhỏ nằm hoàn toàn trong box lớn
-    final = []
-    for i, det in enumerate(kept):
-        bbox_i = det.get('bbox', [0,0,0,0])
-        area_i = _box_dimensions(bbox_i)[2]
-        is_inner = False
-        for j, other in enumerate(kept):
-            if i == j:
-                continue
-            bbox_j = other.get('bbox', [0,0,0,0])
-            area_j = _box_dimensions(bbox_j)[2]
-            # Nếu box i nằm hoàn toàn trong box j và nhỏ hơn đáng kể
-            if (bbox_i[0] >= bbox_j[0] and bbox_i[1] >= bbox_j[1] and
-                bbox_i[2] <= bbox_j[2] and bbox_i[3] <= bbox_j[3] and area_i < area_j * 0.85):
-                is_inner = True
-                break
-        if not is_inner:
-            final.append(det)
-    return final
+        source = det.get('source')
+        suppressed = False
+        
+        for kept_det in kept:
+            kept_box = kept_det.get('bbox', [0, 0, 0, 0])
+            kept_label = kept_det.get('label')
+            kept_source = kept_det.get('source')
+            
+            iou = compute_iou_xyxy(box, kept_box)
+            
+            # SSD-Saliency same-label duplicate suppression (triệt tiêu Saliency trùng lặp SSD)
+            if source == 'saliency' and kept_source == 'ssd' and label == kept_label:
+                # Tính diện tích giao nhau trên diện tích hộp Saliency
+                ix1 = max(box[0], kept_box[0])
+                iy1 = max(box[1], kept_box[1])
+                ix2 = min(box[2], kept_box[2])
+                iy2 = min(box[3], kept_box[3])
+                inter = max(0.0, ix2 - ix1) * max(0.0, iy2 - iy1)
+                area_saliency = (box[2] - box[0]) * (box[3] - box[1])
+                if area_saliency > 0 and (inter / area_saliency) > 0.50:
+                    suppressed = True
+                    break
+            
+            if label == kept_label:
+                # Cùng nhãn: triệt tiêu nếu đè lên nhau quá nhiều
+                limit = iou_threshold if iou_threshold is not None else 0.35
+                if iou > limit:
+                    suppressed = True
+                    break
+            else:
+                # Khác nhãn: chỉ triệt tiêu nếu đè lên nhau cực lớn (trùng vật lý)
+                limit = 0.65
+                if class_agnostic:
+                    limit = min(limit, iou_threshold)
+                if iou > limit:
+                    suppressed = True
+                    break
+                    
+        if not suppressed:
+            kept.append(det)
+            
+    return kept
 
 
 def nms_detections(detections, iou_threshold=NMS_IOU_THRESHOLD):
-    """Class-agnostic NMS."""
-    return suppress_overlapping_detections(detections, iou_threshold=iou_threshold, class_agnostic=True)
+    """NMS với bộ lọc nhãn thông minh."""
+    return suppress_overlapping_detections(detections, iou_threshold=iou_threshold, class_agnostic=False)
 
 
 def _box_dimensions(bbox):
@@ -1393,10 +1442,11 @@ def _adaptive_saliency_percentile(dist_map):
     return percentile
 
 
-def detect_objects_saliency(image_path, max_proposals=None):
+def detect_objects_saliency(image_path, max_proposals=None, min_label_score=None):
     if not USE_SALIENCY_DETECTION:
         return []
     max_proposals = max_proposals or MAX_MULTI_DETECTIONS
+    min_label_score = min_label_score if min_label_score is not None else SALIENCY_MIN_LABEL_SCORE
     try:
         from scipy import ndimage
     except ImportError:
@@ -1472,7 +1522,7 @@ def detect_objects_saliency(image_path, max_proposals=None):
 
             crop = upscale_crop_if_needed(img_pil.crop((left, top, right, bottom)))
             label, label_score = classify_crop_robust(crop)
-            if not label or label_score < SALIENCY_MIN_LABEL_SCORE:
+            if not label or label_score < min_label_score:
                 continue
 
             # FIX #7: center bias nhẹ hơn
@@ -1570,6 +1620,7 @@ def detect_objects_ssd(
 
     boxes  = out['detection_boxes'][0].numpy()
     scores = out['detection_scores'][0].numpy()
+    classes = out['detection_classes'][0].numpy().astype(int)
     num    = int(out['num_detections'][0].numpy())
 
     min_pixel = 56  # hạ từ 72: bắt vật nhỏ hơn
@@ -1578,6 +1629,12 @@ def detect_objects_ssd(
         score = float(scores[i])
         if score < min_score:
             continue
+
+        # Lọc bỏ các class nền và nội thất không phải rác
+        cls_id = int(classes[i])
+        if cls_id in EXCLUDED_COCO_CLASSES:
+            continue
+
         ymin, xmin, ymax, xmax = boxes[i].tolist()
         box_area = max(0.0, xmax - xmin) * max(0.0, ymax - ymin)
         if box_area < min_box_area or box_area > max_box_area:
@@ -1640,8 +1697,10 @@ def detect_objects_ssd(
 def filter_background_detections(detections):
     """
     FIX #9: Chỉ lọc background thực sự, không check area 2 lần.
-    - Box tràn cả 2 chiều và area > 0.80 → background
-    - corner_bias < 0.20 VÀ score rất thấp → background corner
+    - Lọc box nền có diện tích > DETECT_MAX_BOX_AREA (92%).
+    - Hoặc box chạm cả hai biên (is_edge_box) và diện tích > 0.75.
+    - Lọc hộp Saliency ở rìa/góc xa trung tâm và điểm tin cậy không đủ cao.
+    - Bỏ box ở góc với confidence rất thấp.
     """
     if not detections:
         return detections
@@ -1652,10 +1711,24 @@ def filter_background_detections(detections):
         cb = det.get('center_bias', center_bias_score(bbox))
         score = det.get('score', 0.0)
         label_score = det.get('label_score', score)
+        source = det.get('source')
 
-        # Bỏ box gần như toàn ảnh (area > 80%) — chắc chắn là background
-        if area > 0.80:
-            logger.debug("filter_background: loại box area=%.3f (>0.80)", area)
+        # Lọc box nền có diện tích cực lớn
+        if area > DETECT_MAX_BOX_AREA:
+            logger.debug("filter_background: loại box area=%.3f (>%.2f)", area, DETECT_MAX_BOX_AREA)
+            continue
+
+        # Lọc box nền rìa ảnh tràn cả 2 chiều và diện tích lớn
+        if is_edge_box(bbox) and area > 0.75:
+            logger.debug("filter_background: loại edge box diện tích lớn area=%.3f (>0.75)", area)
+            continue
+
+        # Lọc các hộp Saliency ở rìa/góc xa trung tâm và điểm tin cậy không cao (dưới 0.85)
+        cx = (bbox[0] + bbox[2]) / 2.0
+        cy = (bbox[1] + bbox[3]) / 2.0
+        dist = ((cx - 0.5) ** 2 + (cy - 0.5) ** 2) ** 0.5
+        if source == 'saliency' and dist > 0.40 and label_score < 0.85:
+            logger.debug("filter_background: loại corner saliency box dist=%.2f label_score=%.2f", dist, label_score)
             continue
 
         # Bỏ box ở góc với confidence rất thấp
@@ -1684,11 +1757,13 @@ def detect_objects(image_path, min_score=None, max_detections=100,
                 max_box_area=max_box_area,
             ) or []
 
-        # Bổ sung saliency khi SSD < 3 vật (để bắt vật bị miss)
-        if len(detections) < 3 and USE_SALIENCY_DETECTION:
-            saliency = detect_objects_saliency(image_path)
+        # Sửa đổi: chạy Saliency dự phòng khi SSD phát hiện < 2 vật thể để tránh bỏ sót
+        # (ví dụ khi có thêm quần áo bên cạnh chai nhựa/tờ giấy).
+        if len(detections) < 2 and USE_SALIENCY_DETECTION:
+            # Tăng ngưỡng min_label_score lên 0.60 khi chạy dự phòng để tránh bám nhiễu nền
+            saliency = detect_objects_saliency(image_path, min_label_score=0.60)
             if saliency:
-                # Merge và NMS để không duplicate
+                # Merge và NMS để loại bỏ trùng lặp
                 combined = detections + saliency
                 detections = nms_detections(combined)
 
