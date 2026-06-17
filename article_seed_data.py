@@ -118,3 +118,6 @@ def build_seed_articles():
             day_offset += 1
 
     return articles
+#python Model.py
+#python app.py
+#venv\Scripts\activate

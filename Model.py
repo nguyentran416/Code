@@ -239,6 +239,4 @@ plt.show()
 
 
 #cd d:\Code\Code\Project\Waste-Classification-Web-main
-#python Model.py
-#python app.py
-#venv\Scripts\activate
+
